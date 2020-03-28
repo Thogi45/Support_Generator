@@ -1,5 +1,5 @@
 import os,sys, glob
-import Locate_STL
+
 from stl import mesh, Mesh
 import subprocess
 
@@ -9,5 +9,8 @@ print("            SUPPORT GENERATOR              \n")
 print("by Thomas Heissel and Thomas Girerd       ")
 print("----------------------------------------\n")
 print("You need to choose the STL file you want to generate supports with.")
+
+import Locate_STL
+
 STL=Locate_STL.STL
 
