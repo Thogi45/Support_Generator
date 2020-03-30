@@ -51,7 +51,7 @@ while OK2==False:
                 print("Enter a integer between ",0," and ",i-1)
         if nbr>=1 and nbr<=len(STL):
             print("You have selected: ", STL[nbr-1])
-            STL1=mesh.Mesh.from_file(STL[nbr-1])
+            STL1=STL[nbr-1]
         elif nbr>len(STL) and nbr<=len(STL)+len(AllDF):
             print(nbr,len(STL))
             path=AllDF[nbr-len(STL)-1]
