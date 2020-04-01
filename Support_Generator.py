@@ -4,7 +4,7 @@ from mpl_toolkits import mplot3d
 from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 
-mesh = mesh.Mesh.from_file("C:\\Users\\DCLIC\\PycharmProjects\\Support_Generator\\T.stl")
+mesh = mesh.Mesh.from_file("C:\\Users\\DCLIC\\PycharmProjects\\Support_Generator\\tessa_vase_filled.stl")
 normal = mesh.normals
 vertices = mesh.points
 '''np.array([[2.,0.,0.,4.,0.,0.,1.,1.,1.],[1.,0.,0.,0.,1.,0.,1.,1.,0],[0.,0.,0.,0.,1.,0.,1.,0.,0],[2.,0.,0.,1.,0.,0.,1.,1.,1.],[1.,-1.,0.,1.,0.,0.,0.,0.,2.]])
@@ -26,6 +26,7 @@ Zones=[]
 supp=0
 compteur=0
 za=0
+print(len(vertices))
 while a < len(vertices):
     PetitZone=[]
     zi=0
@@ -56,11 +57,11 @@ while a < len(vertices):
         i=i+1
     Zones.append(PetitZone)
 
-
+    print(a)
     za=za+1
     a=a+compteur+1
 
-
+print("Toto")
 ListeContour=[]
 for ij in range(len(Zones)):
     Contour=np.zeros((shapes[0]*3,6))
@@ -150,10 +151,13 @@ for ij in range(len(Zones)):
                 Contour=np.delete(Contour,a+1,axis=0)
                 IsFollow1=Contour[p,3:6]
         ListeContour.append(Contour)
+        print(ij)
+        print(len(Zones))
+
 
 print(Contour)
 print(Contour[0:len(Contour),0])
-
+''''''''''
 for ij in range(len(ListeContour)):
     for i in range(len(ListeContour[ij])-1):
         plt.plot([ListeContour[ij][i][0],ListeContour[ij][i+1][0]] ,[ListeContour[ij][i][1],ListeContour[ij][i+1][1]])
@@ -162,6 +166,10 @@ for ij in range(len(ListeContour)):
     plt.xlim(-50,50)
     plt.ylim(-50,50)
     plt.show()
+'''
 
+### Projection à faire
+### Fonctions
+### Affichage graphe plus cool
 
 
