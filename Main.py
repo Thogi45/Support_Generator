@@ -10,7 +10,6 @@ print("by Thomas Heissel and Thomas Girerd       ")
 print("----------------------------------------\n")
 print("You need to choose the STL file you want to generate supports with.")
 
-import Locate_STL
+import Support_finder
 
-STL=Locate_STL.STL
 

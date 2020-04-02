@@ -7,7 +7,13 @@ import numpy as np
 import math
 
 #Plot normal to mesh
-my_mesh= mesh.Mesh.from_file('C:\\Users\\thoma\\PycharmProjects\\Support_Generator\\Y_40.stl')
+'''''''''
+import Locate_STL
+my_mesh= mesh.Mesh.from_file(Locate_STL.STL1)
+'''''''''
+
+my_mesh= mesh.Mesh.from_file("C:\\Users\\DCLIC\\PycharmProjects\\Support_Generator\\Y_40.stl")
+
 normal=my_mesh.normals
 vertices= my_mesh.points
 Shape_normal= np.shape(normal)
