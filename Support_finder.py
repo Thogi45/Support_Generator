@@ -12,7 +12,7 @@ import Locate_STL
 my_mesh= mesh.Mesh.from_file(Locate_STL.STL1)
 '''''''''
 
-my_mesh= mesh.Mesh.from_file("C:\\Users\\DCLIC\\PycharmProjects\\Support_Generator\\Y_40.stl")
+my_mesh= mesh.Mesh.from_file("C:\\Users\\thoma\\PycharmProjects\\Support_Generator\\H_bridge10.stl")
 
 normal=my_mesh.normals
 vertices= my_mesh.points
@@ -25,7 +25,7 @@ for i in range (0,Shape_normal[0]):
     Normal_dir_start2[i,:]= np.array([vertices[i,3], vertices[i,4], vertices[i,5],normal[i,0],normal[i,1],normal[i,2]])
     Normal_dir_start3[i,:]= np.array([vertices[i,6], vertices[i,7], vertices[i,8],normal[i,0],normal[i,1],normal[i,2]])
 
-'''X1,Y1,Z1,U1,V1,W1= zip(*Normal_dir_start1)
+X1,Y1,Z1,U1,V1,W1= zip(*Normal_dir_start1)
 X2,Y2,Z2,U2,V2,W2= zip(*Normal_dir_start2)
 X3,Y3,Z3,U3,V3,W3= zip(*Normal_dir_start3)
 figure1 = plt.figure(1)
@@ -38,9 +38,14 @@ ax.set_xlabel('X')
 ax.set_ylabel('Y')
 ax.set_zlabel('Z')
 plt.xlim(-50,50)
-plt.ylim(-50,50)'''
+plt.ylim(-50,50)
+ax.set_zlim(0,50)
 
-def points_needed_support_45deg_rule (normal, vertices):
+def support_45deg_rule (normal, vertices):
+    '''
+    45° rule for overhangs
+    If an overhang tilts at an angle less than 45 degress from the vertical it requires 3D printing support structures.
+    '''
     #angle between reference z-axis and normal
 
     Shape_normal= np.shape(normal)
@@ -184,12 +189,114 @@ def points_needed_support_45deg_rule (normal, vertices):
     Required_support=Required_support[0:m]
     return Required_support,m
 
+def needed_support_Bridge_rule (normal, vertices):
+    '''
+    5 mm rule for bridges
+    If a bridge is more than 5 mm in length, it requires 3D printing support structure
+    '''
 
-support=points_needed_support_45deg_rule (normal, vertices)
+    Shape_normal= np.shape(normal)
+    Shape_vertices=np.shape(vertices)
+    Unit_vector_normals=np.zeros((Shape_normal[0], 3))
+    dot_product=np.zeros((Shape_normal[0], 1))
+    angle=np.zeros((Shape_normal[0],1))
+    Vector_reference = np.array([[0],[0],[1]])
+    ab=np.zeros((0,9))
+    for i in range (0,Shape_normal[0]):
+        Unit_vector_normals[i,:]= normal[i,:]/np.linalg.norm(normal[i,:])
+        dot_product[i,:]=np.dot(Unit_vector_normals[i,:],Vector_reference)
+        angle[i,:]= np.arccos(dot_product[i,:])
+        if np.abs(angle[i,:]) == 0 or np.abs(angle[i,:]) == np.pi:
+            b= np.array([vertices[i,:]])
+            ab=np.append(ab,b,axis=0)
+        else:
+            pass
+    print(ab)
+    ab_shape=np.shape(ab)
+    for j in range (0, ab_shape[0]):
+        for k in range (0, ab_shape[0]):
+            d1=0
+            d2=0
+            d3=0
+            for l in range (0,2):
+                if ab[j,2] != ab[k,3*l+2]:
+                    d1+=1
+                else:
+                    pass
+                if ab[j,5] != ab[k,3*l+2]:
+                    d2+=1
+                else:
+                    pass
+                if ab[j,8] != ab[k,3*l+2]:
+                    d3+=1
+                else:
+                    pass
 
-'''figure2 = plt.figure(2)
+    Required_support = ["a1","a2","a3","a4","a5","a6","a7","a8","a9","a10","a11","a12","a13","a14","a15","a16","a17","a18","a19","a20","a21","a22","a23","a24","a25","a26","a27","a28","a29","a30"]
+    i=0
+    m=0
+    while i<ab_shape[0]:
+        if i==0:
+            Required_support[m]=ab[i,:]
+            m+=1
+        else:
+            x1=x2=x3=0
+            y1=y2=y3=0
+            z1=z2=z3=0
+            if ab[i,0] != ab[i-1,0]:
+                x1+=1
+            else:
+                pass
+            if ab[i,3] != ab[i-1,3]:
+                x2+=1
+            else:
+                pass
+            if ab[i,6] != ab[i-1,6]:
+                x3+=1
+            else:
+                pass
+            if ab[i,1] != ab[i-1,1]:
+                y1+=1
+            else:
+                pass
+            if ab[i,4] != ab[i-1,4]:
+                y2+=1
+            else:
+                pass
+            if ab[i,7] != ab[i-1,7]:
+                y3+=1
+            else:
+                pass
+            if ab[i,2] != ab[i-1,2]:
+                z1+=1
+            else:
+                pass
+            if ab[i,5] != ab[i-1,5]:
+                z2+=1
+            else:
+                pass
+            if ab[i,8] != ab[i-1,8]:
+                z3+=1
+            else:
+                pass
+            if (x1+x2+x3+y1+y2+y3+z1+z2+z3)>3:
+                Required_support[m]=ab[i,:]
+                m+=1
+            else:
+                b=np.array(ab[i,:])
+                Required_support[m-1]=np.append(Required_support[m-1],b,axis=0)
+        i+=1
+    Required_support=Required_support[0:m]
+    print(Required_support,m)
+    return ab
+support_angle=support_45deg_rule(normal,vertices)
+support_bridge=needed_support_Bridge_rule(normal,vertices)
+
+
+
+figure2 = plt.figure(2)
 ax2 = figure2.add_subplot(111, projection='3d')
-verts=[[support[i,j*3:j*3+3] for j in range(3)] for i in range(support.shape[0])]
+verts=[[support_bridge[i,j*3:j*3+3] for j in range(3)] for i in range(support_bridge.shape[0])]
 ax2.add_collection3d(Poly3DCollection(verts, alpha=0.25, facecolors='#800000'))
 ax2.set_xlabel('X')
 ax2.set_ylabel('Y')
@@ -197,4 +304,6 @@ ax2.set_zlabel('Z')
 ax2.set_xlim(-50,50)
 ax2.set_ylim(-50,50)
 ax2.set_zlim(-50,50)
-plt.show()'''
+
+plt.show()
+
