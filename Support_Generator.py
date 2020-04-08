@@ -6,7 +6,7 @@ import numpy as np
 
 mesh = mesh.Mesh.from_file("C:\\Users\\DCLIC\\PycharmProjects\\Support_Generator\\tessa_vase_filled.stl")
 normal = mesh.normals
-vertices = np.array([[2.,0.,0.,4.,0.,0.,1.,1.,1.],[1.,0.,0.,0.,1.,0.,1.,1.,0],[0.,0.,0.,0.,1.,0.,1.,0.,0],[2.,0.,0.,1.,0.,0.,1.,1.,1.],[1.,-1.,0.,1.,0.,0.,0.,0.,2.]])
+vertices = mesh.points
 '''np.array([[2.,0.,0.,4.,0.,0.,1.,1.,1.],[1.,0.,0.,0.,1.,0.,1.,1.,0],[0.,0.,0.,0.,1.,0.,1.,0.,0],[2.,0.,0.,1.,0.,0.,1.,1.,1.],[1.,-1.,0.,1.,0.,0.,0.,0.,2.]])
 '''
 figure = plt.figure()
@@ -27,9 +27,7 @@ supp=0
 compteur=0
 za=0
 print(len(vertices))
-longueurV=len(vertices)
-del vertices
-while a < longueurV:
+while a < len(vertices):
     PetitZone=[]
     zi=0
     ref=plan[0,0:9]
@@ -159,7 +157,7 @@ for ij in range(len(Zones)):
 
 print(Contour)
 print(Contour[0:len(Contour),0])
-
+''''''''''
 for ij in range(len(ListeContour)):
     for i in range(len(ListeContour[ij])-1):
         plt.plot([ListeContour[ij][i][0],ListeContour[ij][i+1][0]] ,[ListeContour[ij][i][1],ListeContour[ij][i+1][1]])
@@ -168,7 +166,7 @@ for ij in range(len(ListeContour)):
     plt.xlim(-50,50)
     plt.ylim(-50,50)
     plt.show()
-
+'''
 
 ### Projection à faire
 ### Fonctions
