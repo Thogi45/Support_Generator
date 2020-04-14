@@ -5,6 +5,7 @@ from mpl_toolkits.mplot3d import Axes3D
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 import numpy as np
 import math
+import Support_Generator
 
 #Plot normal to mesh
 '''''''''
@@ -184,7 +185,7 @@ def support_45deg_rule (normal, vertices):
                 m+=1
             else:
                 b=np.array(a[i,:])
-                Required_support[m-1]=np.append(Required_support[m-1],b,axis=0)
+                Required_support[m-1]=np.vstack((Required_support[m-1],b))
         i+=1
     Required_support=Required_support[0:m]
     return Required_support,m
@@ -211,7 +212,7 @@ def needed_support_Bridge_rule (normal, vertices):
             ab=np.append(ab,b,axis=0)
         else:
             pass
-    print(ab)
+    #print(ab)
     ab_shape=np.shape(ab)
     for j in range (0, ab_shape[0]):
         for k in range (0, ab_shape[0]):
@@ -284,14 +285,43 @@ def needed_support_Bridge_rule (normal, vertices):
                 m+=1
             else:
                 b=np.array(ab[i,:])
-                Required_support[m-1]=np.append(Required_support[m-1],b,axis=0)
+                Required_support[m-1]=np.vstack((Required_support[m-1],b))
         i+=1
     Required_support=Required_support[0:m]
-    print(Required_support,m)
+    Shape_required_support=np.shape(Required_support)
+    Contour = Support_Generator.FindContour(Required_support)
+    Shape_contour=np.shape(Contour)
+    print(Contour)
+    print(Contour[0][2][:2])
+    p=0
+    #print(Contour[1,:,:])
+    for j in range(0,m):
+        for k in range (0,m):
+            if j != k:
+                if (Contour[j][0][:2] == Contour[k][0][:2]).all() or (Contour[j][0][:2] == Contour[k][1][:2]).all() or (Contour[j][0][:2] == Contour[k][2][:2]).all() or (Contour[j][0][:2] == Contour[k][3][:2]).all():
+                    if (Contour[j][1][:2] == Contour[k][0][:2]).all() or (Contour[j][1][:2] == Contour[k][1][:2]).all() or (Contour[j][1][:2] == Contour[k][2][:2]).all() or (Contour[j][1][:2] == Contour[k][3][:2]).all():
+                        if (Contour[j][2][:2] == Contour[k][0][:2]).all() or (Contour[j][2][:2] == Contour[k][1][:2]).all() or (Contour[j][2][:2] == Contour[k][2][:2]).all() or (Contour[j][2][:2] == Contour[k][3][:2]).all():
+                            if (Contour[j][3][:2] == Contour[k][0][:2]).all() or (Contour[j][3][:2] == Contour[k][1][:2]).all() or (Contour[j][3][:2] == Contour[k][2][:2]).all() or (Contour[j][3][:2] == Contour[k][3][:2]).all():
+                                if Contour[j][0][2] <= 1e-5 or Contour[k][0][2] <= 1e-5:
+                                    print(j,k)
+                                    Required_support[j]=np.zeros((Shape_required_support[1],Shape_required_support[2]))
+                                    Required_support[k]=np.zeros((Shape_required_support[1],Shape_required_support[2]))
+                                elif Contour[j][0][2] > Contour[k][0][2]:
+                                    Required_support[j]=np.zeros((Shape_required_support[1],Shape_required_support[2]))
+                                else:
+                                    Required_support[k]=np.zeros((Shape_required_support[1],Shape_required_support[2]))
+                                '''Condition sur la distance'''
+                                for l in range (0, Shape_contour[1]):
+                                    for p in range (0, Shape_contour[1]):
+                                        if Contour[j][0][0]!=Contour[j][l][0] and Contour[j][0][1]!=Contour[j][p][1]:
+                                            if abs(Contour[j][0][0]-Contour[j][l][0])<=5 and abs(Contour[j][0][1]-Contour[j][p][1])<=5:
+                                                Required_support[j]=np.zeros((Shape_required_support[1],Shape_required_support[2]))
+                                            else:
+                                                pass
+    print(Required_support)
     return ab
 support_angle=support_45deg_rule(normal,vertices)
 support_bridge=needed_support_Bridge_rule(normal,vertices)
-
 
 
 figure2 = plt.figure(2)
