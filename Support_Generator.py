@@ -24,7 +24,7 @@ vertices = np.array([[0.,0.,0.,1.,0.,0.,0.,1.,0.],[1.,0.,0.,0.,1.,0.,1.,1.,0],[2
 '''np.array([[2.,0.,0.,4.,0.,0.,1.,1.,1.],[1.,0.,0.,0.,1.,0.,1.,1.,0],[0.,0.,0.,0.,1.,0.,1.,0.,0],[2.,0.,0.,1.,0.,0.,1.,1.,1.],[1.,-1.,0.,1.,0.,0.,0.,0.,2.]])
 '''
 #Toto
-
+#Tjdhufhaiuhfhpauihfeapupzehfuieahp
 print(len(vertices))
 
 def AreasWithSameAngle(vertices):
