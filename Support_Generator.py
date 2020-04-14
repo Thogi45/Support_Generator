@@ -4,7 +4,7 @@ from mpl_toolkits import mplot3d
 from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 
-mesh = mesh.Mesh.from_file("C:\\Users\\thoma\\PycharmProjects\\Support_Generator\\H_bridge10.stl")
+mesh = mesh.Mesh.from_file("C:\\Users\\DCLIC\\PycharmProjects\\Support_Generator\\tessa_vase_filled.stl")
 normal = mesh.normals
 vertices = np.array([[0.,0.,0.,1.,0.,0.,0.,1.,0.],[1.,0.,0.,0.,1.,0.,1.,1.,0],[2.,1.,0.,1.,1.,0.,1.,2.,0],[-1.,0.,0.,0.,-1.,0.,0.,0.,0.],[2.,2.,0.,2.,1.,0.,1.,2.,0.]])
 
@@ -166,16 +166,17 @@ ListeContour = FindContour(Zones)
 ListeCarre=[np.array([[ 5., -5., 10.,  0., -5., 10.,  5.,  5., 10.], [5.,  5., 10.,  0.,-5., 10.,  0.,  5., 10.]]), np.array([ [5.00000000e+00, -1.00000000e+01,  3.55271402e-14,  0.00000000e+00,-1.00000000e+01,  3.55271402e-14,  5.00000000e+00, -5.00000000e+00,0.00000000e+00],[  5.00000000e+00, -5.00000000e+00,  0.00000000e+00,0.00000000e+00, -1.00000000e+01,  3.55271402e-14,  0.00000000e+00,-5.00000000e+00,  0.00000000e+00]]), np.array([[5.,  -5.,  25.,   0.,  -5.,  25.,   5., -10.,  25.],[5., -10.,25.,   0.,  -5.,  25.,   0., -10.,  25.]]), np.array([[5.,  5., 15.,  0.,  5., 15.,  5., -5., 15.], [ 5., -5., 15.,  0.,5., 15.,  0., -5., 15.]]), np.array([[5., 10., 25.,  0., 10., 25.,  5.,  5., 25.],[5.,  5., 25.,  0.,10., 25.,  0.,  5., 25.]]), np.array([[5.,  5.,  0.,  0.,  5.,  0.,  5., 10.,  0.],[5., 10.,  0.,  0.,5.,  0.,  0., 10.,  0.]])]
 shapes1=np.shape(ListeCarre[0])
 
+
 ListeContour= FindContour(ListeCarre)
 
-'''for ij in range(len(ListeContour)):
+for ij in range(len(ListeContour)):
     for i in range(len(ListeContour[ij])-1):
         plt.plot([ListeContour[ij][i][0],ListeContour[ij][i+1][0]] ,[ListeContour[ij][i][1],ListeContour[ij][i+1][1]])
 
     plt.plot([ListeContour[ij][i+1][0],ListeContour[ij][0][0]] ,[ListeContour[ij][i+1][1],ListeContour[ij][0][1]])
     plt.xlim(-15,30)
     plt.ylim(-15,30)
-    plt.show()'''
+    plt.show()
 
 k=0
 ### Projection à faire
