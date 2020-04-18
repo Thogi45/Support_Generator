@@ -5,15 +5,14 @@ from mpl_toolkits.mplot3d import Axes3D
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 import numpy as np
 import math
-import Support_Generator
+
 
 #Plot normal to mesh
-'''''''''
+
 import Locate_STL
 my_mesh= mesh.Mesh.from_file(Locate_STL.STL1)
-'''''''''
 
-my_mesh= mesh.Mesh.from_file("C:\\Users\\thoma\\PycharmProjects\\Support_Generator\\H_bridge10.stl")
+
 
 normal=my_mesh.normals
 vertices= my_mesh.points
@@ -188,7 +187,7 @@ def support_45deg_rule (normal, vertices):
                 Required_support[m-1]=np.vstack((Required_support[m-1],b))
         i+=1
     Required_support=Required_support[0:m]
-    return Required_support,m
+    return a
 
 def needed_support_Bridge_rule (normal, vertices):
     '''
@@ -207,12 +206,12 @@ def needed_support_Bridge_rule (normal, vertices):
         Unit_vector_normals[i,:]= normal[i,:]/np.linalg.norm(normal[i,:])
         dot_product[i,:]=np.dot(Unit_vector_normals[i,:],Vector_reference)
         angle[i,:]= np.arccos(dot_product[i,:])
-        if np.abs(angle[i,:]) == 0 or np.abs(angle[i,:]) == np.pi:
+        if np.abs(angle[i,:])==0 or np.abs(angle[i,:])==np.pi:
             b= np.array([vertices[i,:]])
             ab=np.append(ab,b,axis=0)
         else:
             pass
-    #print(ab)
+    print(ab)
     ab_shape=np.shape(ab)
     for j in range (0, ab_shape[0]):
         for k in range (0, ab_shape[0]):
@@ -289,12 +288,12 @@ def needed_support_Bridge_rule (normal, vertices):
         i+=1
     Required_support=Required_support[0:m]
     Shape_required_support=np.shape(Required_support)
-    Contour = Support_Generator.FindContour(Required_support)
+    from Support_Generator import FindContour
+    Contour = FindContour(Required_support)
     Shape_contour=np.shape(Contour)
-    print(Contour)
-    print(Contour[0][2][:2])
     p=0
     #print(Contour[1,:,:])
+    n=0
     for j in range(0,m):
         for k in range (0,m):
             if j != k:
@@ -302,6 +301,7 @@ def needed_support_Bridge_rule (normal, vertices):
                     if (Contour[j][1][:2] == Contour[k][0][:2]).all() or (Contour[j][1][:2] == Contour[k][1][:2]).all() or (Contour[j][1][:2] == Contour[k][2][:2]).all() or (Contour[j][1][:2] == Contour[k][3][:2]).all():
                         if (Contour[j][2][:2] == Contour[k][0][:2]).all() or (Contour[j][2][:2] == Contour[k][1][:2]).all() or (Contour[j][2][:2] == Contour[k][2][:2]).all() or (Contour[j][2][:2] == Contour[k][3][:2]).all():
                             if (Contour[j][3][:2] == Contour[k][0][:2]).all() or (Contour[j][3][:2] == Contour[k][1][:2]).all() or (Contour[j][3][:2] == Contour[k][2][:2]).all() or (Contour[j][3][:2] == Contour[k][3][:2]).all():
+                                n+=1
                                 if Contour[j][0][2] <= 1e-5 or Contour[k][0][2] <= 1e-5:
                                     print(j,k)
                                     Required_support[j]=np.zeros((Shape_required_support[1],Shape_required_support[2]))
@@ -318,8 +318,12 @@ def needed_support_Bridge_rule (normal, vertices):
                                                 Required_support[j]=np.zeros((Shape_required_support[1],Shape_required_support[2]))
                                             else:
                                                 pass
-    print(Required_support)
-    return ab
+                    else:
+                        Required_support[j]=np.zeros((Shape_required_support[1],Shape_required_support[2]))
+                        Required_support[k]=np.zeros((Shape_required_support[1],Shape_required_support[2]))
+    Required_support=Required_support[0:n]
+
+    return Required_support
 support_angle=support_45deg_rule(normal,vertices)
 support_bridge=needed_support_Bridge_rule(normal,vertices)
 

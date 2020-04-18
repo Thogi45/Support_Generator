@@ -50,7 +50,7 @@ def AreasWithSameAngle(vertices):
         len1= len(plan)
         i=0
         compteur=0
-        while i < len1 :
+        while i < len1-1 :
             P1=plan[0,0:3]
             P2=plan[0,3:6]
             P3=plan[0,6:9]
@@ -74,8 +74,9 @@ def AreasWithSameAngle(vertices):
 def FindContour(Zones):
     ListeContour=[]
     ij=-1
-    while ij<len(Zones):
-        ij=ij+1
+    while ij<len(Zones)-1:
+        print("TITI")
+        ij = ij+1
         IndexContour=[]
         IndexContour.append(0)
         shapes=np.shape(Zones[ij])
@@ -83,7 +84,6 @@ def FindContour(Zones):
         SmallZone=Zones[ij]
         p=0
         for a in range(len(SmallZone)):
-
             IsExt=SmallZone[a][0:6]
             BIsExt=True
             IsExt2=SmallZone[a][3:9]
@@ -106,12 +106,12 @@ def FindContour(Zones):
                         Test=0
                         Test2=0
                         Test3=0
-                        for ij in range(len(A[ii])):
-                            if A[ii,ij] == True:
+                        for il in range(len(A[ii])):
+                            if A[ii,il] == True:
                                 Test=Test+1
-                            if B[ii,ij] == True:
+                            if B[ii,il] == True:
                                 Test2=Test2+1
-                            if C[ii,ij] == True:
+                            if C[ii,il] == True:
                                 Test3=Test3+1
                         if Test==6:
                             BIsExt=False
@@ -130,25 +130,6 @@ def FindContour(Zones):
                 p=p+1
         for i in range(p,shapes[0]*3):
             Contour=np.delete(Contour,p,axis=0)
-        for i in range(1,len(Contour)):
-            Points1=[Contour[i-1,0]==Contour[i,0],Contour[i-1,1]==Contour[i,1],Contour[i-1,2]==Contour[i,2],Contour[i-1,0]==Contour[i,3],Contour[i-1,1]==Contour[i,4],Contour[i-1,2]==Contour[i,5]]
-            Points2=[Contour[i-1,3]==Contour[i,0],Contour[i-1,4]==Contour[i,1],Contour[i-1,5]==Contour[i,2],Contour[i-1,3]==Contour[i,3],Contour[i-1,4]==Contour[i,4],Contour[i-1,5]==Contour[i,5]]
-            P1=0
-            P2=0
-            P3=0
-            P4=0
-            for ij in range(3):
-                if Points1[ij]==True:
-                    P1=P1+1
-                if Points1[ij+3]==True:
-                    P2=P2+1
-                if Points2[ij]==True:
-                    P3=P3+1
-                if Points2[ij+3]==True:
-                    P4=P4+1
-            if ((P1<3 and P2<3) and P3<3) and P4<3:
-                numberContour=numberContour+1
-                IndexContour.append(i)
         if numberContour>1:
             Contour1=[]
             IndexContour.append(len(Contour))
@@ -165,7 +146,8 @@ def FindContour(Zones):
             if len(Contour)!=0:
                 IsFollow1=Contour[0,3:6]
                 p=0
-                while p<len(Contour):
+                while p<len(Contour)-1:
+                    print("TOTO")
                     p=p+1
                     BisFollow=False
                     for i in range(p,len(Contour)):
@@ -174,8 +156,8 @@ def FindContour(Zones):
                         A =np.array([IsFollow1 == IsFollow2,IsFollow1 == IsFollow3])
                         for ii in range(len(A)):
                             Test=0
-                            for ij in range(len(A[ii])):
-                                if A[ii,ij] == True:
+                            for il in range(len(A[ii])):
+                                if A[ii,il] == True:
                                     Test=Test+1
                             if Test==3:
                                 BisFollow=True
@@ -194,13 +176,13 @@ def FindContour(Zones):
                         Contour=np.insert(Contour,p,Contour[a],axis=0)
                         Contour=np.delete(Contour,a+1,axis=0)
                         IsFollow1=Contour[p,3:6]
-                p=0
+
 
                 ListeContour.append(Contour)
     return ListeContour
 
-Zones = AreasWithSameAngle(vertices)
-ListeContour = FindContour(Zones)
+#Zones = AreasWithSameAngle(vertices)
+#ListeContour = FindContour(Zones)
 
 #ListeCarre=[np.array([[ 5., -5., 10.,  0., -5., 10.,  5.,  5., 10.], [5.,  5., 10.,  0.,-5., 10.,  0.,  5., 10.]]), np.array([ [5.00000000e+00, -1.00000000e+01,  3.55271402e-14,  0.00000000e+00,-1.00000000e+01,  3.55271402e-14,  5.00000000e+00, -5.00000000e+00,0.00000000e+00],[  5.00000000e+00, -5.00000000e+00,  0.00000000e+00,0.00000000e+00, -1.00000000e+01,  3.55271402e-14,  0.00000000e+00,-5.00000000e+00,  0.00000000e+00]]), np.array([[5.,  -5.,  25.,   0.,  -5.,  25.,   5., -10.,  25.],[5., -10.,25.,   0.,  -5.,  25.,   0., -10.,  25.]]), np.array([[5.,  5., 15.,  0.,  5., 15.,  5., -5., 15.], [ 5., -5., 15.,  0.,5., 15.,  0., -5., 15.]]), np.array([[5., 10., 25.,  0., 10., 25.,  5.,  5., 25.],[5.,  5., 25.,  0.,10., 25.,  0.,  5., 25.]]), np.array([[5.,  5.,  0.,  0.,  5.,  0.,  5., 10.,  0.],[5., 10.,  0.,  0.,5.,  0.,  0., 10.,  0.]])]
 #shapes1=np.shape(ListeCarre[0])
@@ -357,7 +339,7 @@ while i!=101:
 
 '''''''''''
 
-
+'''''''''
 for ij in range(len(ListeContour)):
     for i in range(len(ListeContour[ij])-1):
         plt.plot([ListeContour[ij][i][0],ListeContour[ij][i+1][0]] ,[ListeContour[ij][i][1],ListeContour[ij][i+1][1]])
@@ -366,8 +348,8 @@ for ij in range(len(ListeContour)):
     plt.xlim(-15,30)
     plt.ylim(-15,30)
     plt.show()
-
-
+'''''''''''
+'''''''''''
 ### Projection à faire
 ListeProjete=[]
 ListC2=[]
@@ -392,7 +374,8 @@ shape=(10,10)
 xq,yq = np.mgrid[-2:2:5j,-2:2:5j]
 #x=np.array([[ListeProjete[0][1][0,0]*2,ListeProjete[0][1][1,0],ListeProjete[0][1][2,0]],[ListeProjete[0][1][0,1],ListeProjete[0][1][1,1],ListeProjete[0][1][2,1]*2]])
 
-''''''''''
+'''''''''
+'''''''''
 img = np.zeros((10,10), dtype=np.uint8)
 img[xx, cc] = 1
 cubes_test = np.array([[[0.,0.,0.,0.,0.],[0.,0.,0.,0.,0.],[0.,0.,0.,0.,0.],[0.,0.,0.,0.,0.],[0.,0.,0.,0.,0.]],[[0.,0.,0.,0.,0.],[0.,1.,1.,1.,0.],[0.,1.,1.,1.,0.],[0.,1.,1.,1.,0.],[0.,0.,0.,0.,0.]],[[0.,0.,0.,0.,0.],[0.,0.,0.,0.,0.],[0.,0.,0.,0.,0.],[0.,0.,0.,0.,0.],[0.,0.,0.,0.,0.]],[[0.,0.,0.,0.,0.],[0.,0.,0.,0.,0.],[0.,0.,0.,0.,0.],[0.,0.,0.,0.,0.],[0.,0.,0.,0.,0.]],[[0.,0.,0.,0.,0.],[0.,0.,0.,0.,0.],[0.,0.,0.,0.,0.],[0.,0.,0.,0.,0.],[0.,0.,0.,0.,0.]]])
@@ -419,6 +402,8 @@ plt.show()
 ### Fonctions
 ### Affichage graphe plus cool
 '''''''''''
+
+'''''''''
 ListFinal=[]
 ListConT=[]
 toto=np.array([[5,5,1,0,5,1], [0,5,1,0,0,1],[0,0,1,5,0,1],[5,0,0,5,5,1]])
@@ -428,5 +413,5 @@ ListProj=[]
 toto2=np.array([[5,5,0,0,5,0], [0,5,0,0,0,0],[0,0,0,5,0,0],[5,0,0,5,5,0]])
 ListProj.append(toto2)
 ListFinal.append(ListProj)
+'''''
 
-k=0
