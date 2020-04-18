@@ -4,9 +4,17 @@ from mpl_toolkits import mplot3d
 from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 
+
 mesh = mesh.Mesh.from_file("C:\\Users\\DCLIC\\PycharmProjects\\Support_Generator\\tessa_vase_filled.stl")
+
+import copy as cp
+import math
+from skimage.draw import polygon,ellipsoid
+from skimage import measure
+
+
 normal = mesh.normals
-vertices = np.array([[0.,0.,0.,1.,0.,0.,0.,1.,0.],[1.,0.,0.,0.,1.,0.,1.,1.,0],[2.,1.,0.,1.,1.,0.,1.,2.,0],[-1.,0.,0.,0.,-1.,0.,0.,0.,0.],[2.,2.,0.,2.,1.,0.,1.,2.,0.]])
+vertices = np.array([[5.,5.,1.,0.,5.,1.,5.,0.,1.],[0.,0.,1.,5.,0.,1.,0.,5.,1.],[-2.,-1.,0.,-3.,-1.,0.,-3.,-2.,0.]])
 
 '''[array([ 5., -5., 10.,  0., -5., 10.,  5.,  5., 10.,  5.,  5., 10.,  0.,
        -5., 10.,  0.,  5., 10.]), array([ 5.00000000e+00, -1.00000000e+01,  3.55271402e-14,  0.00000000e+00,
@@ -70,7 +78,11 @@ def AreasWithSameAngle(vertices):
 
 def FindContour(Zones):
     ListeContour=[]
-    for ij in range(len(Zones)):
+    ij=-1
+    while ij<len(Zones):
+        ij=ij+1
+        IndexContour=[]
+        IndexContour.append(0)
         shapes=np.shape(Zones[ij])
         Contour=np.zeros((shapes[0]*3,6))
         SmallZone=Zones[ij]
@@ -83,7 +95,7 @@ def FindContour(Zones):
             BIsExt2=True
             IsExt3=np.concatenate((SmallZone[a][0:3],SmallZone[a][6:9]))
             BIsExt3=True
-
+            numberContour=1
             for i in range(len(SmallZone)):
                 if i!=a:
                     IsExt4=SmallZone[i][0:6]
@@ -112,7 +124,6 @@ def FindContour(Zones):
                             BIsExt2=False
                         if Test3==6:
                             BIsExt3=False
-
             if BIsExt==True:
                 Contour[p,0:6]=IsExt
                 p=p+1
@@ -124,47 +135,235 @@ def FindContour(Zones):
                 p=p+1
         for i in range(p,shapes[0]*3):
             Contour=np.delete(Contour,p,axis=0)
+        for i in range(1,len(Contour)):
+            Points1=[Contour[i-1,0]==Contour[i,0],Contour[i-1,1]==Contour[i,1],Contour[i-1,2]==Contour[i,2],Contour[i-1,0]==Contour[i,3],Contour[i-1,1]==Contour[i,4],Contour[i-1,2]==Contour[i,5]]
+            Points2=[Contour[i-1,3]==Contour[i,0],Contour[i-1,4]==Contour[i,1],Contour[i-1,5]==Contour[i,2],Contour[i-1,3]==Contour[i,3],Contour[i-1,4]==Contour[i,4],Contour[i-1,5]==Contour[i,5]]
+            P1=0
+            P2=0
+            P3=0
+            P4=0
+            for ij in range(3):
+                if Points1[ij]==True:
+                    P1=P1+1
+                if Points1[ij+3]==True:
+                    P2=P2+1
+                if Points2[ij]==True:
+                    P3=P3+1
+                if Points2[ij+3]==True:
+                    P4=P4+1
+            if ((P1<3 and P2<3) and P3<3) and P4<3:
+                numberContour=numberContour+1
+                IndexContour.append(i)
+        if numberContour>1:
+            Contour1=[]
+            IndexContour.append(len(Contour))
+            for l in range(len(IndexContour)-1):
+                Contour1.append(Contour[IndexContour[l]:IndexContour[l+1]])
+            for i in range(IndexContour[1],len(Contour)):
+                 Contour=np.delete(Contour,IndexContour[1],axis=0)
+        if numberContour==1:
+            Contour1=[]
+            Contour1.append(Contour)
+#Tri Contour
+        for KON in range(len(Contour1)):
+            Contour=Contour1[KON]
+            if len(Contour)!=0:
+                IsFollow1=Contour[0,3:6]
+                p=0
+                while p<len(Contour):
+                    p=p+1
+                    BisFollow=False
+                    for i in range(p,len(Contour)):
+                        IsFollow2=Contour[i,0:3]
+                        IsFollow3=Contour[i,3:6]
+                        A =np.array([IsFollow1 == IsFollow2,IsFollow1 == IsFollow3])
+                        for ii in range(len(A)):
+                            Test=0
+                            for ij in range(len(A[ii])):
+                                if A[ii,ij] == True:
+                                    Test=Test+1
+                            if Test==3:
+                                BisFollow=True
+                                k=ii
+                                a=i
+                    if k==0 and BisFollow==True:
+                       Contour=np.insert(Contour,p,Contour[a],axis=0)
+                       Contour=np.delete(Contour,a+1,axis=0)
+                       IsFollow1=Contour[p,3:6]
+                    if k==1 and BisFollow==True:
+                        Sauv=Contour[a,0:3]
+                        Sauv2=Contour[a,3:6]
+                        Sauv=np.concatenate((Sauv2,Sauv))
+                        Contour=np.insert(Contour,a,Sauv,axis=0)
+                        Contour=np.delete(Contour,a+1,axis=0)
+                        Contour=np.insert(Contour,p,Contour[a],axis=0)
+                        Contour=np.delete(Contour,a+1,axis=0)
+                        IsFollow1=Contour[p,3:6]
+                p=0
 
-        if len(Contour)!=0:
-            IsFollow1=Contour[0,3:6]
-            p=0
-            while p<len(Contour):
-                p=p+1
-                BisFollow=False
-                for i in range(p,len(Contour)):
-                    IsFollow2=Contour[i,0:3]
-                    IsFollow3=Contour[i,3:6]
-                    A =np.array([IsFollow1 == IsFollow2,IsFollow1 == IsFollow3])
-                    for ii in range(len(A)):
-                        Test=0
-                        for ij in range(len(A[ii])):
-                            if A[ii,ij] == True:
-                                Test=Test+1
-                        if Test==3:
-                            BisFollow=True
-                            k=ii
-                            a=i
-                if k==0 and BisFollow==True:
-                   Contour=np.insert(Contour,p,Contour[a],axis=0)
-                   Contour=np.delete(Contour,a+1,axis=0)
-                   IsFollow1=Contour[p,3:6]
-                if k==1 and BisFollow==True:
-                    Sauv=Contour[a,0:3]
-                    Sauv2=Contour[a,3:6]
-                    Sauv=np.concatenate((Sauv2,Sauv))
-                    Contour=np.insert(Contour,a,Sauv,axis=0)
-                    Contour=np.delete(Contour,a+1,axis=0)
-                    Contour=np.insert(Contour,p,Contour[a],axis=0)
-                    Contour=np.delete(Contour,a+1,axis=0)
-                    IsFollow1=Contour[p,3:6]
-            ListeContour.append(Contour)
+                ListeContour.append(Contour)
     return ListeContour
 
 Zones = AreasWithSameAngle(vertices)
 ListeContour = FindContour(Zones)
 
-ListeCarre=[np.array([[ 5., -5., 10.,  0., -5., 10.,  5.,  5., 10.], [5.,  5., 10.,  0.,-5., 10.,  0.,  5., 10.]]), np.array([ [5.00000000e+00, -1.00000000e+01,  3.55271402e-14,  0.00000000e+00,-1.00000000e+01,  3.55271402e-14,  5.00000000e+00, -5.00000000e+00,0.00000000e+00],[  5.00000000e+00, -5.00000000e+00,  0.00000000e+00,0.00000000e+00, -1.00000000e+01,  3.55271402e-14,  0.00000000e+00,-5.00000000e+00,  0.00000000e+00]]), np.array([[5.,  -5.,  25.,   0.,  -5.,  25.,   5., -10.,  25.],[5., -10.,25.,   0.,  -5.,  25.,   0., -10.,  25.]]), np.array([[5.,  5., 15.,  0.,  5., 15.,  5., -5., 15.], [ 5., -5., 15.,  0.,5., 15.,  0., -5., 15.]]), np.array([[5., 10., 25.,  0., 10., 25.,  5.,  5., 25.],[5.,  5., 25.,  0.,10., 25.,  0.,  5., 25.]]), np.array([[5.,  5.,  0.,  0.,  5.,  0.,  5., 10.,  0.],[5., 10.,  0.,  0.,5.,  0.,  0., 10.,  0.]])]
-shapes1=np.shape(ListeCarre[0])
+
+
+
+#ListeCarre=[np.array([[ 5., -5., 10.,  0., -5., 10.,  5.,  5., 10.], [5.,  5., 10.,  0.,-5., 10.,  0.,  5., 10.]]), np.array([ [5.00000000e+00, -1.00000000e+01,  3.55271402e-14,  0.00000000e+00,-1.00000000e+01,  3.55271402e-14,  5.00000000e+00, -5.00000000e+00,0.00000000e+00],[  5.00000000e+00, -5.00000000e+00,  0.00000000e+00,0.00000000e+00, -1.00000000e+01,  3.55271402e-14,  0.00000000e+00,-5.00000000e+00,  0.00000000e+00]]), np.array([[5.,  -5.,  25.,   0.,  -5.,  25.,   5., -10.,  25.],[5., -10.,25.,   0.,  -5.,  25.,   0., -10.,  25.]]), np.array([[5.,  5., 15.,  0.,  5., 15.,  5., -5., 15.], [ 5., -5., 15.,  0.,5., 15.,  0., -5., 15.]]), np.array([[5., 10., 25.,  0., 10., 25.,  5.,  5., 25.],[5.,  5., 25.,  0.,10., 25.,  0.,  5., 25.]]), np.array([[5.,  5.,  0.,  0.,  5.,  0.,  5., 10.,  0.],[5., 10.,  0.,  0.,5.,  0.,  0., 10.,  0.]])]
+#shapes1=np.shape(ListeCarre[0])
+
+'''''''''
+#ListeContour= FindContour(ListeCarre)
+Index=[]
+for ij in range(len(ListeContour)):
+    SmallIndex=[]
+    for i in range(1,len(ListeContour[ij])):
+        v1=np.array([ListeContour[ij][i][3]-ListeContour[ij][i][0],ListeContour[ij][i][4]-ListeContour[ij][i][1],ListeContour[ij][i][5]-ListeContour[ij][i][2]])
+        v2=np.array([ListeContour[ij][i-1][3]-ListeContour[ij][i-1][0],ListeContour[ij][i-1][4]-ListeContour[ij][i-1][1],ListeContour[ij][i-1][5]-ListeContour[ij][i-1][2]])
+        if np.dot(np.array([v1[0],v1[1],0]),np.array([1,0,0]))/np.linalg.norm([v1[0],v1[1],0])==np.dot(np.array([v2[0],v2[1],0]),np.array([1,0,0]))/np.linalg.norm([v2[0],v2[1],0]):
+            if np.dot(np.array([v1[0],v1[1],v1[2]]),np.array([0,0,1]))/np.linalg.norm([v1[0],v1[1],v1[2]])==np.dot(np.array([v2[0],v2[1],v2[2]]),np.array([0,0,1]))/np.linalg.norm([v2[0],v2[1],v2[2]]):
+                ListeContour[ij][i-1][3:6]=ListeContour[ij][i][3:6]
+                SmallIndex.append(i)
+    Index.append(SmallIndex)
+
+for ij in range(len(Index)):
+    j=len(Index[ij])
+    while j!=0:
+        ListeContour[ij]=np.delete(ListeContour[ij],Index[ij][j-1],axis=0)
+        j=j-1
+
+vertices=ListeContour[0]
+MaxX=vertices[0,0]
+MinX=vertices[0,0]
+PointMaxX=vertices[0,0:3]
+PointMinX=vertices[0,0:3]
+MaxY=vertices[0,1]
+MinY=vertices[0,1]
+PointMaxY=vertices[0,0:3]
+PointMinY=vertices[0,0:3]
+for ij in range(len(vertices)):
+    if vertices[ij,0]>=MaxX:
+        MaxX=vertices[ij,0]
+        PointMaxX=vertices[ij,0:3]
+    if vertices[ij,0]<=MinX:
+        MinX=vertices[ij,0]
+        PointMinX=vertices[ij,0:3]
+    if vertices[ij,0]>=MaxY:
+        MaxY=vertices[ij,0]
+        PointMaxY=vertices[ij,0:3]
+    if vertices[ij,0]<=MinY:
+        MinY=vertices[ij,0]
+        PointMinY=vertices[ij,0:3]
+
+
+Precision=100
+
+
+while (vertices[j,0]!=PointMinX[0] or vertices[j,1]!=PointMinX[1]):
+    j=j+1
+
+Start=vertices[j,0:3]
+CurrentPoint1=Start
+CurrentPoint2=Start
+Points1=[]
+Points2=[]
+Points1.append(Start)
+Points2.append(Start)
+xp1=Start[0]
+A=Start[1]-MinY
+B=MaxY-MinY
+
+                                if isinstance(A/B*Precision,int):
+                        yp1=Start[1]
+                        yp2=Start[1]
+ COMMENT BEFORE                   else:
+                        yp1=math.ceil(A/B*Precision)*B/Precision+MinY
+                        yp2=math.floor(A/B*Precision)*B/Precision+MinY
+
+
+Points1=[]
+Points2=[]
+Points1.append(Start)
+Points2.append(Start)
+if j == 0 :
+    NextPoint1=vertices[j+1,0:3]
+    a1=j+1
+    NextPoint2=vertices[len(vertices)-1,0:3]
+    a2=len(vertices)-1
+if j== len(vertices)-1:
+    NextPoint1=vertices[0,0:3]
+    a1=0
+    NextPoint2=vertices[j-1,0:3]
+    a2=j-1
+if j!=len(vertices)-1 and j!=0:
+    NextPoint1=vertices[j+1,0:3]
+    NextPoint2=vertices[j-1,0:3]
+    a1=j+1
+    a2=j-1
+print(a1)
+distanceMax=np.linalg.norm([Start[0]-NextPoint1[0],Start[1]-NextPoint1[1],0])
+End = NextPoint1
+for i in range(len(vertices)):
+    if distanceMax<=np.linalg.norm([Start[0]-vertices[i,0],Start[1]-vertices[i,1],0]):
+        End = vertices[i,0:3]
+        distanceMax=np.linalg.norm([Start[0]-vertices[i,0],Start[1]-vertices[i,1],0])
+
+i=1
+while i!=101:
+    xp1=xp1+1/Precision*(MaxX-MinX)
+    if xp1>NextPoint1[0]:
+        CurrentPoint1=NextPoint1
+        if a1>=len(vertices)-1:
+            a1=0
+        else:
+            a1=a1+1
+        NextPoint1=vertices[a1,0:3]
+    if xp1>NextPoint2[0]:
+        CurrentPoint2=NextPoint2
+        if a2<=0:
+            a2=len(vertices)-1
+        else:
+            a2=a2-1
+        NextPoint2=vertices[a2,0:3]
+    VNP1=np.array([NextPoint1[0]-CurrentPoint1[0],NextPoint1[1]-CurrentPoint1[1],0])
+    VNP2=np.array([NextPoint2[0]-CurrentPoint2[0],NextPoint2[1]-CurrentPoint2[1],0])
+    if np.dot(VNP1,[1,0,0])==0:
+        CurrentPoint1=NextPoint1
+        if a1>=len(vertices)-1:
+            a1=0
+        else:
+            a1=a1+1
+        NextPoint1=vertices[a1,0:3]
+    if np.dot(VNP2,[1,0,0])==0:
+        CurrentPoint2=NextPoint2
+        if a2<=0:
+            a2=len(vertices)-1
+        else:
+            a2=a2-1
+        NextPoint2=vertices[a2,0:3]
+    if i==34:
+        k=0
+    VNP1=np.array([NextPoint1[0]-CurrentPoint1[0],NextPoint1[1]-CurrentPoint1[1],0])
+    VNP2=np.array([NextPoint2[0]-CurrentPoint2[0],NextPoint2[1]-CurrentPoint2[1],0])
+    COS1=np.dot(VNP1,[1,0,0])/np.linalg.norm(VNP1)
+    COS2=np.dot(VNP2,[1,0,0])/np.linalg.norm(VNP2)
+    if NextPoint1[1]>=CurrentPoint1[1]:
+        yp1=CurrentPoint1[1]+(xp1-CurrentPoint1[0])*np.tan(np.arccos(COS1))
+    else:
+        yp1=CurrentPoint1[1]-(xp1-CurrentPoint1[0])*np.tan(np.arccos(COS1))
+    if NextPoint2[1]>=CurrentPoint2[1]:
+
+        yp2=CurrentPoint2[1]+(xp1-CurrentPoint2[0])*np.tan(np.arccos(COS2))
+    else:
+        yp2=CurrentPoint2[1]-(xp1-CurrentPoint2[0])*np.tan(np.arccos(COS2))
+    Points1.append(np.array([xp1,yp1,0]))
+    Points2.append(np.array([xp1,yp2,0]))
+    print(i)
+    i=i+1
+
+
+'''''''''''
 
 
 ListeContour= FindContour(ListeCarre)
@@ -178,12 +377,69 @@ for ij in range(len(ListeContour)):
     plt.ylim(-15,30)
     plt.show()
 
-k=0
+
+
+
 ### Projection à faire
+ListeProjete=[]
+ListC2=[]
+ListC2=cp.deepcopy(ListeContour)
+for ij in range(len(ListC2)):
+    for i in range(len(ListC2[ij])):
+        ListC2[ij][i,2]=0
+        ListC2[ij][i,5]=0
 
 
 
+ListeProjete.append(ListeContour)
+ListeProjete.append(ListC2)
+k=ListeProjete[1][0]
+
+def func(x, y):
+    return x*(1-x)*np.cos(4*np.pi*x) * np.sin(4*np.pi*y**2)**2
+grid_x, grid_y = np.mgrid[0:1:100j, 0:1:200j]
+points = np.random.rand(1000, 2)
+values = func(points[:,0], points[:,1])
+a=np.array([1,1,1])
+shape=(10,10)
+xq,yq = np.mgrid[-2:2:5j,-2:2:5j]
+#x=np.array([[ListeProjete[0][1][0,0]*2,ListeProjete[0][1][1,0],ListeProjete[0][1][2,0]],[ListeProjete[0][1][0,1],ListeProjete[0][1][1,1],ListeProjete[0][1][2,1]*2]])
+
+''''''''''
+img = np.zeros((10,10), dtype=np.uint8)
+img[xx, cc] = 1
+cubes_test = np.array([[[0.,0.,0.,0.,0.],[0.,0.,0.,0.,0.],[0.,0.,0.,0.,0.],[0.,0.,0.,0.,0.],[0.,0.,0.,0.,0.]],[[0.,0.,0.,0.,0.],[0.,1.,1.,1.,0.],[0.,1.,1.,1.,0.],[0.,1.,1.,1.,0.],[0.,0.,0.,0.,0.]],[[0.,0.,0.,0.,0.],[0.,0.,0.,0.,0.],[0.,0.,0.,0.,0.],[0.,0.,0.,0.,0.],[0.,0.,0.,0.,0.]],[[0.,0.,0.,0.,0.],[0.,0.,0.,0.,0.],[0.,0.,0.,0.,0.],[0.,0.,0.,0.,0.],[0.,0.,0.,0.,0.]],[[0.,0.,0.,0.,0.],[0.,0.,0.,0.,0.],[0.,0.,0.,0.,0.],[0.,0.,0.,0.,0.],[0.,0.,0.,0.,0.]]])
+verts2, faces2, normals2, values2 = measure.marching_cubes_lewiner(cubes_test, 0.,  spacing=(1,1,1))
+verts2[:,0]=verts2[:,0]-np.mean(verts2[:,0]) ##translate the coordinates of mesh vertices and move to center
+verts2[:,1]=verts2[:,1]-np.mean(verts2[:,1]) ##translate the coordinates of mesh vertices and move to center
+verts2[:,2]=verts2[:,2]-np.mean(verts2[:,2])##
+ellip_base = ellipsoid(6, 10, 16, levelset=True)
+k=0
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
+from mpl_toolkits.mplot3d.art3d import Poly3DCollection
+mesh = Poly3DCollection(verts2[faces2])
+mesh.set_edgecolor('k')
+ax.add_collection3d(mesh)
+ax.set_xlabel("x-axis")
+ax.set_ylabel("y-axis")
+ax.set_zlabel("z-axis")
+plt.title("Min/Max Method")
+ax.set_xlim(-2.0,2.0)
+ax.set_ylim(-2.0,2.0)
+ax.set_zlim(-2.0,2.0)
+plt.show()
 ### Fonctions
 ### Affichage graphe plus cool
+'''''''''''
+ListFinal=[]
+ListConT=[]
+toto=np.array([[5,5,1,0,5,1], [0,5,1,0,0,1],[0,0,1,5,0,1],[5,0,0,5,5,1]])
+ListConT.append(toto)
+ListFinal.append(ListConT)
+ListProj=[]
+toto2=np.array([[5,5,0,0,5,0], [0,5,0,0,0,0],[0,0,0,5,0,0],[5,0,0,5,5,0]])
+ListProj.append(toto2)
+ListFinal.append(ListProj)
 
-
+k=0
