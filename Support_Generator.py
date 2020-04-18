@@ -3,19 +3,34 @@ from matplotlib import pyplot as plt
 from mpl_toolkits import mplot3d
 from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
-
-
-mesh = mesh.Mesh.from_file("C:\\Users\\DCLIC\\PycharmProjects\\Support_Generator\\tessa_vase_filled.stl")
-
 import copy as cp
 import math
 from skimage.draw import polygon,ellipsoid
 from skimage import measure
-
-
+mesh = mesh.Mesh.from_file("C:\\Users\\DCLIC\\PycharmProjects\\Support_Generator\\Demi_Cercle.stl")
 normal = mesh.normals
 vertices = np.array([[5.,5.,1.,0.,5.,1.,5.,0.,1.],[0.,0.,1.,5.,0.,1.,0.,5.,1.],[-2.,-1.,0.,-3.,-1.,0.,-3.,-2.,0.]])
-
+cubes_test = np.array([[[1.,1.,1.,1.,1.],[1.,1.,1.,1.,1.],[1.,1.,1.,1.,1.],[1.,1.,1.,1.,1.],[1.,1.,1.,1.,1.]],[[1.,1.,1.,1.,1.],[1.,0.,-1.,0.,1.],[1.,0.,-1.,0.,1.],[1.,0.,-1.,0.,1.],[1.,1.,1.,1.,1.]],[[1.,1.,1.,1.,1.],[1.,0.,-1.,0.,1.],[1.,0.,-1.,0.,1.],[1.,0.,-1.,0.,1.],[1.,1.,1.,1.,1.]],[[1.,1.,1.,1.,1.],[1.,0.,-1.,0.,1.],[1.,0.,-1.,0.,1.],[1.,0.,-1.,0.,1.],[1.,1.,1.,1.,1.]],[[1.,1.,1.,1.,1.],[1.,1.,1.,1.,1.],[1.,1.,1.,1.,1.],[1.,1.,1.,1.,1.],[1.,1.,1.,1.,1.]]])
+verts2, faces2, normals2, values2 = measure.marching_cubes_lewiner(cubes_test, 0.,  spacing=(1,1,1))
+verts2[:,0]=verts2[:,0]-np.mean(verts2[:,0]) ##translate the coordinates of mesh vertices and move to center
+verts2[:,1]=verts2[:,1]-np.mean(verts2[:,1]) ##translate the coordinates of mesh vertices and move to center
+verts2[:,2]=verts2[:,2]-np.mean(verts2[:,2])##
+ellip_base = ellipsoid(6, 10, 16, levelset=True)
+k=0
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
+from mpl_toolkits.mplot3d.art3d import Poly3DCollection
+mesh = Poly3DCollection(verts2[faces2])
+mesh.set_edgecolor('k')
+ax.add_collection3d(mesh)
+ax.set_xlabel("x-axis")
+ax.set_ylabel("y-axis")
+ax.set_zlabel("z-axis")
+plt.title("Min/Max Method")
+ax.set_xlim(-2.0,2.0)
+ax.set_ylim(-2.0,2.0)
+ax.set_zlim(-2.0,2.0)
+plt.show()
 '''[array([ 5., -5., 10.,  0., -5., 10.,  5.,  5., 10.,  5.,  5., 10.,  0.,
        -5., 10.,  0.,  5., 10.]), array([ 5.00000000e+00, -1.00000000e+01,  3.55271402e-14,  0.00000000e+00,
        -1.00000000e+01,  3.55271402e-14,  5.00000000e+00, -5.00000000e+00,
@@ -30,6 +45,7 @@ vertices = np.array([[5.,5.,1.,0.,5.,1.,5.,0.,1.],[0.,0.,1.,5.,0.,1.,0.,5.,1.],[
 '''
 '''np.array([[2.,0.,0.,4.,0.,0.,1.,1.,1.],[1.,0.,0.,0.,1.,0.,1.,1.,0],[0.,0.,0.,0.,1.,0.,1.,0.,0],[2.,0.,0.,1.,0.,0.,1.,1.,1.],[1.,-1.,0.,1.,0.,0.,0.,0.,2.]])
 '''
+
 
 print(len(vertices))
 
@@ -54,7 +70,7 @@ def AreasWithSameAngle(vertices):
         len1= len(plan)
         i=0
         compteur=0
-        while i < len1 :
+        while i < len1-1 :
             P1=plan[0,0:3]
             P2=plan[0,3:6]
             P3=plan[0,6:9]
@@ -78,8 +94,9 @@ def AreasWithSameAngle(vertices):
 def FindContour(Zones):
     ListeContour=[]
     ij=-1
-    while ij<len(Zones):
-        ij=ij+1
+    while ij<len(Zones)-1:
+        print("TITI")
+        ij = ij+1
         IndexContour=[]
         IndexContour.append(0)
         shapes=np.shape(Zones[ij])
@@ -87,7 +104,6 @@ def FindContour(Zones):
         SmallZone=Zones[ij]
         p=0
         for a in range(len(SmallZone)):
-
             IsExt=SmallZone[a][0:6]
             BIsExt=True
             IsExt2=SmallZone[a][3:9]
@@ -110,12 +126,12 @@ def FindContour(Zones):
                         Test=0
                         Test2=0
                         Test3=0
-                        for ij in range(len(A[ii])):
-                            if A[ii,ij] == True:
+                        for il in range(len(A[ii])):
+                            if A[ii,il] == True:
                                 Test=Test+1
-                            if B[ii,ij] == True:
+                            if B[ii,il] == True:
                                 Test2=Test2+1
-                            if C[ii,ij] == True:
+                            if C[ii,il] == True:
                                 Test3=Test3+1
                         if Test==6:
                             BIsExt=False
@@ -134,25 +150,6 @@ def FindContour(Zones):
                 p=p+1
         for i in range(p,shapes[0]*3):
             Contour=np.delete(Contour,p,axis=0)
-        for i in range(1,len(Contour)):
-            Points1=[Contour[i-1,0]==Contour[i,0],Contour[i-1,1]==Contour[i,1],Contour[i-1,2]==Contour[i,2],Contour[i-1,0]==Contour[i,3],Contour[i-1,1]==Contour[i,4],Contour[i-1,2]==Contour[i,5]]
-            Points2=[Contour[i-1,3]==Contour[i,0],Contour[i-1,4]==Contour[i,1],Contour[i-1,5]==Contour[i,2],Contour[i-1,3]==Contour[i,3],Contour[i-1,4]==Contour[i,4],Contour[i-1,5]==Contour[i,5]]
-            P1=0
-            P2=0
-            P3=0
-            P4=0
-            for ij in range(3):
-                if Points1[ij]==True:
-                    P1=P1+1
-                if Points1[ij+3]==True:
-                    P2=P2+1
-                if Points2[ij]==True:
-                    P3=P3+1
-                if Points2[ij+3]==True:
-                    P4=P4+1
-            if ((P1<3 and P2<3) and P3<3) and P4<3:
-                numberContour=numberContour+1
-                IndexContour.append(i)
         if numberContour>1:
             Contour1=[]
             IndexContour.append(len(Contour))
@@ -169,7 +166,8 @@ def FindContour(Zones):
             if len(Contour)!=0:
                 IsFollow1=Contour[0,3:6]
                 p=0
-                while p<len(Contour):
+                while p<len(Contour)-1:
+                    print("TOTO")
                     p=p+1
                     BisFollow=False
                     for i in range(p,len(Contour)):
@@ -178,8 +176,8 @@ def FindContour(Zones):
                         A =np.array([IsFollow1 == IsFollow2,IsFollow1 == IsFollow3])
                         for ii in range(len(A)):
                             Test=0
-                            for ij in range(len(A[ii])):
-                                if A[ii,ij] == True:
+                            for il in range(len(A[ii])):
+                                if A[ii,il] == True:
                                     Test=Test+1
                             if Test==3:
                                 BisFollow=True
@@ -198,16 +196,13 @@ def FindContour(Zones):
                         Contour=np.insert(Contour,p,Contour[a],axis=0)
                         Contour=np.delete(Contour,a+1,axis=0)
                         IsFollow1=Contour[p,3:6]
-                p=0
+
 
                 ListeContour.append(Contour)
     return ListeContour
 
-Zones = AreasWithSameAngle(vertices)
-ListeContour = FindContour(Zones)
-
-
-
+#Zones = AreasWithSameAngle(vertices)
+#ListeContour = FindContour(Zones)
 
 #ListeCarre=[np.array([[ 5., -5., 10.,  0., -5., 10.,  5.,  5., 10.], [5.,  5., 10.,  0.,-5., 10.,  0.,  5., 10.]]), np.array([ [5.00000000e+00, -1.00000000e+01,  3.55271402e-14,  0.00000000e+00,-1.00000000e+01,  3.55271402e-14,  5.00000000e+00, -5.00000000e+00,0.00000000e+00],[  5.00000000e+00, -5.00000000e+00,  0.00000000e+00,0.00000000e+00, -1.00000000e+01,  3.55271402e-14,  0.00000000e+00,-5.00000000e+00,  0.00000000e+00]]), np.array([[5.,  -5.,  25.,   0.,  -5.,  25.,   5., -10.,  25.],[5., -10.,25.,   0.,  -5.,  25.,   0., -10.,  25.]]), np.array([[5.,  5., 15.,  0.,  5., 15.,  5., -5., 15.], [ 5., -5., 15.,  0.,5., 15.,  0., -5., 15.]]), np.array([[5., 10., 25.,  0., 10., 25.,  5.,  5., 25.],[5.,  5., 25.,  0.,10., 25.,  0.,  5., 25.]]), np.array([[5.,  5.,  0.,  0.,  5.,  0.,  5., 10.,  0.],[5., 10.,  0.,  0.,5.,  0.,  0., 10.,  0.]])]
 #shapes1=np.shape(ListeCarre[0])
@@ -364,9 +359,7 @@ while i!=101:
 
 '''''''''''
 
-
-ListeContour= FindContour(ListeCarre)
-
+'''''''''
 for ij in range(len(ListeContour)):
     for i in range(len(ListeContour[ij])-1):
         plt.plot([ListeContour[ij][i][0],ListeContour[ij][i+1][0]] ,[ListeContour[ij][i][1],ListeContour[ij][i+1][1]])
@@ -375,10 +368,8 @@ for ij in range(len(ListeContour)):
     plt.xlim(-15,30)
     plt.ylim(-15,30)
     plt.show()
-
-
-
-
+'''''''''''
+'''''''''''
 ### Projection à faire
 ListeProjete=[]
 ListC2=[]
@@ -387,7 +378,6 @@ for ij in range(len(ListC2)):
     for i in range(len(ListC2[ij])):
         ListC2[ij][i,2]=0
         ListC2[ij][i,5]=0
-
 
 
 ListeProjete.append(ListeContour)
@@ -404,33 +394,15 @@ shape=(10,10)
 xq,yq = np.mgrid[-2:2:5j,-2:2:5j]
 #x=np.array([[ListeProjete[0][1][0,0]*2,ListeProjete[0][1][1,0],ListeProjete[0][1][2,0]],[ListeProjete[0][1][0,1],ListeProjete[0][1][1,1],ListeProjete[0][1][2,1]*2]])
 
-''''''''''
-img = np.zeros((10,10), dtype=np.uint8)
-img[xx, cc] = 1
-cubes_test = np.array([[[0.,0.,0.,0.,0.],[0.,0.,0.,0.,0.],[0.,0.,0.,0.,0.],[0.,0.,0.,0.,0.],[0.,0.,0.,0.,0.]],[[0.,0.,0.,0.,0.],[0.,1.,1.,1.,0.],[0.,1.,1.,1.,0.],[0.,1.,1.,1.,0.],[0.,0.,0.,0.,0.]],[[0.,0.,0.,0.,0.],[0.,0.,0.,0.,0.],[0.,0.,0.,0.,0.],[0.,0.,0.,0.,0.],[0.,0.,0.,0.,0.]],[[0.,0.,0.,0.,0.],[0.,0.,0.,0.,0.],[0.,0.,0.,0.,0.],[0.,0.,0.,0.,0.],[0.,0.,0.,0.,0.]],[[0.,0.,0.,0.,0.],[0.,0.,0.,0.,0.],[0.,0.,0.,0.,0.],[0.,0.,0.,0.,0.],[0.,0.,0.,0.,0.]]])
-verts2, faces2, normals2, values2 = measure.marching_cubes_lewiner(cubes_test, 0.,  spacing=(1,1,1))
-verts2[:,0]=verts2[:,0]-np.mean(verts2[:,0]) ##translate the coordinates of mesh vertices and move to center
-verts2[:,1]=verts2[:,1]-np.mean(verts2[:,1]) ##translate the coordinates of mesh vertices and move to center
-verts2[:,2]=verts2[:,2]-np.mean(verts2[:,2])##
-ellip_base = ellipsoid(6, 10, 16, levelset=True)
-k=0
-fig = plt.figure()
-ax = fig.add_subplot(111, projection='3d')
-from mpl_toolkits.mplot3d.art3d import Poly3DCollection
-mesh = Poly3DCollection(verts2[faces2])
-mesh.set_edgecolor('k')
-ax.add_collection3d(mesh)
-ax.set_xlabel("x-axis")
-ax.set_ylabel("y-axis")
-ax.set_zlabel("z-axis")
-plt.title("Min/Max Method")
-ax.set_xlim(-2.0,2.0)
-ax.set_ylim(-2.0,2.0)
-ax.set_zlim(-2.0,2.0)
-plt.show()
+'''''''''
+
+
+
 ### Fonctions
 ### Affichage graphe plus cool
 '''''''''''
+'''''
+'''''''''
 ListFinal=[]
 ListConT=[]
 toto=np.array([[5,5,1,0,5,1], [0,5,1,0,0,1],[0,0,1,5,0,1],[5,0,0,5,5,1]])
@@ -440,5 +412,5 @@ ListProj=[]
 toto2=np.array([[5,5,0,0,5,0], [0,5,0,0,0,0],[0,0,0,5,0,0],[5,0,0,5,5,0]])
 ListProj.append(toto2)
 ListFinal.append(ListProj)
+'''''
 
-k=0

@@ -77,4 +77,5 @@ while OK2==False:
                 OK2=True
             OK=True
 
+k=0
 
