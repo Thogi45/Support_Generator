@@ -7,7 +7,7 @@ import copy as cp
 import math
 from skimage.draw import polygon,ellipsoid
 from skimage import measure
-mesh = mesh.Mesh.from_file("C:\\Users\\DCLIC\\PycharmProjects\\Support_Generator\\Demi_Cercle.stl")
+'''mesh = mesh.Mesh.from_file("C:\\Users\\DCLIC\\PycharmProjects\\Support_Generator\\Demi_Cercle.stl")
 normal = mesh.normals
 vertices = np.array([[5.,5.,1.,0.,5.,1.,5.,0.,1.],[0.,0.,1.,5.,0.,1.,0.,5.,1.],[-2.,-1.,0.,-3.,-1.,0.,-3.,-2.,0.]])
 cubes_test = np.array([[[1.,1.,1.,1.,1.],[1.,1.,1.,1.,1.],[1.,1.,1.,1.,1.],[1.,1.,1.,1.,1.],[1.,1.,1.,1.,1.]],[[1.,1.,1.,1.,1.],[1.,0.,-1.,0.,1.],[1.,0.,-1.,0.,1.],[1.,0.,-1.,0.,1.],[1.,1.,1.,1.,1.]],[[1.,1.,1.,1.,1.],[1.,0.,-1.,0.,1.],[1.,0.,-1.,0.,1.],[1.,0.,-1.,0.,1.],[1.,1.,1.,1.,1.]],[[1.,1.,1.,1.,1.],[1.,0.,-1.,0.,1.],[1.,0.,-1.,0.,1.],[1.,0.,-1.,0.,1.],[1.,1.,1.,1.,1.]],[[1.,1.,1.,1.,1.],[1.,1.,1.,1.,1.],[1.,1.,1.,1.,1.],[1.,1.,1.,1.,1.],[1.,1.,1.,1.,1.]]])
@@ -30,7 +30,7 @@ plt.title("Min/Max Method")
 ax.set_xlim(-2.0,2.0)
 ax.set_ylim(-2.0,2.0)
 ax.set_zlim(-2.0,2.0)
-plt.show()
+plt.show()'''
 '''[array([ 5., -5., 10.,  0., -5., 10.,  5.,  5., 10.,  5.,  5., 10.,  0.,
        -5., 10.,  0.,  5., 10.]), array([ 5.00000000e+00, -1.00000000e+01,  3.55271402e-14,  0.00000000e+00,
        -1.00000000e+01,  3.55271402e-14,  5.00000000e+00, -5.00000000e+00,
@@ -47,7 +47,7 @@ plt.show()
 '''
 
 
-print(len(vertices))
+#print(len(vertices))
 
 def AreasWithSameAngle(vertices):
     a=0
