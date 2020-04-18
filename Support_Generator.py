@@ -10,7 +10,27 @@ from skimage import measure
 mesh = mesh.Mesh.from_file("C:\\Users\\DCLIC\\PycharmProjects\\Support_Generator\\Demi_Cercle.stl")
 normal = mesh.normals
 vertices = np.array([[5.,5.,1.,0.,5.,1.,5.,0.,1.],[0.,0.,1.,5.,0.,1.,0.,5.,1.],[-2.,-1.,0.,-3.,-1.,0.,-3.,-2.,0.]])
-
+cubes_test = np.array([[[1.,1.,1.,1.,1.],[1.,1.,1.,1.,1.],[1.,1.,1.,1.,1.],[1.,1.,1.,1.,1.],[1.,1.,1.,1.,1.]],[[1.,1.,1.,1.,1.],[1.,0.,-1.,0.,1.],[1.,0.,-1.,0.,1.],[1.,0.,-1.,0.,1.],[1.,1.,1.,1.,1.]],[[1.,1.,1.,1.,1.],[1.,0.,-1.,0.,1.],[1.,0.,-1.,0.,1.],[1.,0.,-1.,0.,1.],[1.,1.,1.,1.,1.]],[[1.,1.,1.,1.,1.],[1.,0.,-1.,0.,1.],[1.,0.,-1.,0.,1.],[1.,0.,-1.,0.,1.],[1.,1.,1.,1.,1.]],[[1.,1.,1.,1.,1.],[1.,1.,1.,1.,1.],[1.,1.,1.,1.,1.],[1.,1.,1.,1.,1.],[1.,1.,1.,1.,1.]]])
+verts2, faces2, normals2, values2 = measure.marching_cubes_lewiner(cubes_test, 0.,  spacing=(1,1,1))
+verts2[:,0]=verts2[:,0]-np.mean(verts2[:,0]) ##translate the coordinates of mesh vertices and move to center
+verts2[:,1]=verts2[:,1]-np.mean(verts2[:,1]) ##translate the coordinates of mesh vertices and move to center
+verts2[:,2]=verts2[:,2]-np.mean(verts2[:,2])##
+ellip_base = ellipsoid(6, 10, 16, levelset=True)
+k=0
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
+from mpl_toolkits.mplot3d.art3d import Poly3DCollection
+mesh = Poly3DCollection(verts2[faces2])
+mesh.set_edgecolor('k')
+ax.add_collection3d(mesh)
+ax.set_xlabel("x-axis")
+ax.set_ylabel("y-axis")
+ax.set_zlabel("z-axis")
+plt.title("Min/Max Method")
+ax.set_xlim(-2.0,2.0)
+ax.set_ylim(-2.0,2.0)
+ax.set_zlim(-2.0,2.0)
+plt.show()
 '''[array([ 5., -5., 10.,  0., -5., 10.,  5.,  5., 10.,  5.,  5., 10.,  0.,
        -5., 10.,  0.,  5., 10.]), array([ 5.00000000e+00, -1.00000000e+01,  3.55271402e-14,  0.00000000e+00,
        -1.00000000e+01,  3.55271402e-14,  5.00000000e+00, -5.00000000e+00,
@@ -375,34 +395,13 @@ xq,yq = np.mgrid[-2:2:5j,-2:2:5j]
 #x=np.array([[ListeProjete[0][1][0,0]*2,ListeProjete[0][1][1,0],ListeProjete[0][1][2,0]],[ListeProjete[0][1][0,1],ListeProjete[0][1][1,1],ListeProjete[0][1][2,1]*2]])
 
 '''''''''
-'''''''''
-img = np.zeros((10,10), dtype=np.uint8)
-img[xx, cc] = 1
-cubes_test = np.array([[[0.,0.,0.,0.,0.],[0.,0.,0.,0.,0.],[0.,0.,0.,0.,0.],[0.,0.,0.,0.,0.],[0.,0.,0.,0.,0.]],[[0.,0.,0.,0.,0.],[0.,1.,1.,1.,0.],[0.,1.,1.,1.,0.],[0.,1.,1.,1.,0.],[0.,0.,0.,0.,0.]],[[0.,0.,0.,0.,0.],[0.,0.,0.,0.,0.],[0.,0.,0.,0.,0.],[0.,0.,0.,0.,0.],[0.,0.,0.,0.,0.]],[[0.,0.,0.,0.,0.],[0.,0.,0.,0.,0.],[0.,0.,0.,0.,0.],[0.,0.,0.,0.,0.],[0.,0.,0.,0.,0.]],[[0.,0.,0.,0.,0.],[0.,0.,0.,0.,0.],[0.,0.,0.,0.,0.],[0.,0.,0.,0.,0.],[0.,0.,0.,0.,0.]]])
-verts2, faces2, normals2, values2 = measure.marching_cubes_lewiner(cubes_test, 0.,  spacing=(1,1,1))
-verts2[:,0]=verts2[:,0]-np.mean(verts2[:,0]) ##translate the coordinates of mesh vertices and move to center
-verts2[:,1]=verts2[:,1]-np.mean(verts2[:,1]) ##translate the coordinates of mesh vertices and move to center
-verts2[:,2]=verts2[:,2]-np.mean(verts2[:,2])##
-ellip_base = ellipsoid(6, 10, 16, levelset=True)
-k=0
-fig = plt.figure()
-ax = fig.add_subplot(111, projection='3d')
-from mpl_toolkits.mplot3d.art3d import Poly3DCollection
-mesh = Poly3DCollection(verts2[faces2])
-mesh.set_edgecolor('k')
-ax.add_collection3d(mesh)
-ax.set_xlabel("x-axis")
-ax.set_ylabel("y-axis")
-ax.set_zlabel("z-axis")
-plt.title("Min/Max Method")
-ax.set_xlim(-2.0,2.0)
-ax.set_ylim(-2.0,2.0)
-ax.set_zlim(-2.0,2.0)
-plt.show()
+
+
+
 ### Fonctions
 ### Affichage graphe plus cool
 '''''''''''
-
+'''''
 '''''''''
 ListFinal=[]
 ListConT=[]
