@@ -188,7 +188,7 @@ def support_45deg_rule (normal, vertices):
                 Required_support[m-1]=np.vstack((Required_support[m-1],b))
         i+=1
     Required_support=Required_support[0:m]
-    return Required_support,m
+    return a,Required_support
 
 def needed_support_Bridge_rule (normal, vertices):
     '''
@@ -325,20 +325,22 @@ def needed_support_Bridge_rule (normal, vertices):
     return Required_support
 
 support_angle=support_45deg_rule(normal,vertices)
+#recupère a pour plot
+support_angleplot=support_angle[0]
 support_bridge=needed_support_Bridge_rule(normal,vertices)
-print(support_angle)
-print(support_bridge)
+shape_support=np.shape(support_angleplot)
 
-'''figure2 = plt.figure(2)
+
+figure2 = plt.figure(2)
 ax2 = figure2.add_subplot(111, projection='3d')
-verts=[[support_bridge[i,j*3:j*3+3] for j in range(3)] for i in range(support_bridge.shape[0])]
+verts=[[support_angleplot[i,j*3:j*3+3] for j in range(3)] for i in range(shape_support[0])]
 ax2.add_collection3d(Poly3DCollection(verts, alpha=0.25, facecolors='#800000'))
 ax2.set_xlabel('X')
 ax2.set_ylabel('Y')
 ax2.set_zlabel('Z')
 ax2.set_xlim(-50,50)
 ax2.set_ylim(-50,50)
-ax2.set_zlim(-50,50)'''
+ax2.set_zlim(-50,50)
 
 plt.show()
 
