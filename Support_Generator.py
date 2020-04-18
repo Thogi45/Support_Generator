@@ -3,11 +3,16 @@ from matplotlib import pyplot as plt
 from mpl_toolkits import mplot3d
 from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
+
+
+mesh = mesh.Mesh.from_file("C:\\Users\\DCLIC\\PycharmProjects\\Support_Generator\\tessa_vase_filled.stl")
+
 import copy as cp
 import math
 from skimage.draw import polygon,ellipsoid
 from skimage import measure
-mesh = mesh.Mesh.from_file("C:\\Users\\DCLIC\\PycharmProjects\\Support_Generator\\Demi_Cercle.stl")
+
+
 normal = mesh.normals
 vertices = np.array([[5.,5.,1.,0.,5.,1.,5.,0.,1.],[0.,0.,1.,5.,0.,1.,0.,5.,1.],[-2.,-1.,0.,-3.,-1.,0.,-3.,-2.,0.]])
 
@@ -202,6 +207,9 @@ def FindContour(Zones):
 Zones = AreasWithSameAngle(vertices)
 ListeContour = FindContour(Zones)
 
+
+
+
 #ListeCarre=[np.array([[ 5., -5., 10.,  0., -5., 10.,  5.,  5., 10.], [5.,  5., 10.,  0.,-5., 10.,  0.,  5., 10.]]), np.array([ [5.00000000e+00, -1.00000000e+01,  3.55271402e-14,  0.00000000e+00,-1.00000000e+01,  3.55271402e-14,  5.00000000e+00, -5.00000000e+00,0.00000000e+00],[  5.00000000e+00, -5.00000000e+00,  0.00000000e+00,0.00000000e+00, -1.00000000e+01,  3.55271402e-14,  0.00000000e+00,-5.00000000e+00,  0.00000000e+00]]), np.array([[5.,  -5.,  25.,   0.,  -5.,  25.,   5., -10.,  25.],[5., -10.,25.,   0.,  -5.,  25.,   0., -10.,  25.]]), np.array([[5.,  5., 15.,  0.,  5., 15.,  5., -5., 15.], [ 5., -5., 15.,  0.,5., 15.,  0., -5., 15.]]), np.array([[5., 10., 25.,  0., 10., 25.,  5.,  5., 25.],[5.,  5., 25.,  0.,10., 25.,  0.,  5., 25.]]), np.array([[5.,  5.,  0.,  0.,  5.,  0.,  5., 10.,  0.],[5., 10.,  0.,  0.,5.,  0.,  0., 10.,  0.]])]
 #shapes1=np.shape(ListeCarre[0])
 
@@ -358,6 +366,8 @@ while i!=101:
 '''''''''''
 
 
+ListeContour= FindContour(ListeCarre)
+
 for ij in range(len(ListeContour)):
     for i in range(len(ListeContour[ij])-1):
         plt.plot([ListeContour[ij][i][0],ListeContour[ij][i+1][0]] ,[ListeContour[ij][i][1],ListeContour[ij][i+1][1]])
@@ -368,6 +378,8 @@ for ij in range(len(ListeContour)):
     plt.show()
 
 
+
+
 ### Projection à faire
 ListeProjete=[]
 ListC2=[]
@@ -376,6 +388,7 @@ for ij in range(len(ListC2)):
     for i in range(len(ListC2[ij])):
         ListC2[ij][i,2]=0
         ListC2[ij][i,5]=0
+
 
 
 ListeProjete.append(ListeContour)
