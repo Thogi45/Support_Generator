@@ -315,6 +315,9 @@ def needed_support_Bridge_rule (normal, vertices):
                                         if Contour[j][0][0]!=Contour[j][l][0] and Contour[j][0][1]!=Contour[j][p][1]:
                                             if abs(Contour[j][0][0]-Contour[j][l][0])<=5 and abs(Contour[j][0][1]-Contour[j][p][1])<=5:
                                                 Required_support[j]=np.zeros((Shape_required_support[1],Shape_required_support[2]))
+                                            else:
+                                                n+=1
+                                                pass
             if (m % 2) == 0:
                 pass
             else:
