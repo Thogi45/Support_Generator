@@ -301,7 +301,6 @@ def needed_support_Bridge_rule (normal, vertices):
                     if (Contour[j][1][:2] == Contour[k][0][:2]).all() or (Contour[j][1][:2] == Contour[k][1][:2]).all() or (Contour[j][1][:2] == Contour[k][2][:2]).all() or (Contour[j][1][:2] == Contour[k][3][:2]).all():
                         if (Contour[j][2][:2] == Contour[k][0][:2]).all() or (Contour[j][2][:2] == Contour[k][1][:2]).all() or (Contour[j][2][:2] == Contour[k][2][:2]).all() or (Contour[j][2][:2] == Contour[k][3][:2]).all():
                             if (Contour[j][3][:2] == Contour[k][0][:2]).all() or (Contour[j][3][:2] == Contour[k][1][:2]).all() or (Contour[j][3][:2] == Contour[k][2][:2]).all() or (Contour[j][3][:2] == Contour[k][3][:2]).all():
-                                n+=1
                                 if Contour[j][0][2] <= 1e-5 or Contour[k][0][2] <= 1e-5:
                                     print(j,k)
                                     Required_support[j]=np.zeros((Shape_required_support[1],Shape_required_support[2]))
@@ -316,18 +315,19 @@ def needed_support_Bridge_rule (normal, vertices):
                                         if Contour[j][0][0]!=Contour[j][l][0] and Contour[j][0][1]!=Contour[j][p][1]:
                                             if abs(Contour[j][0][0]-Contour[j][l][0])<=5 and abs(Contour[j][0][1]-Contour[j][p][1])<=5:
                                                 Required_support[j]=np.zeros((Shape_required_support[1],Shape_required_support[2]))
-                                            else:
-                                                pass
-                    else:
-                        Required_support[j]=np.zeros((Shape_required_support[1],Shape_required_support[2]))
-                        Required_support[k]=np.zeros((Shape_required_support[1],Shape_required_support[2]))
+            if (m % 2) == 0:
+                pass
+            else:
+                Required_support[j]=np.zeros((Shape_required_support[1],Shape_required_support[2]))
+                Required_support[k]=np.zeros((Shape_required_support[1],Shape_required_support[2]))
+                n=0
     Required_support=Required_support[0:n]
-
     return Required_support
 support_angle=support_45deg_rule(normal,vertices)
 support_bridge=needed_support_Bridge_rule(normal,vertices)
+print(support_bridge)
 
-
+'''
 figure2 = plt.figure(2)
 ax2 = figure2.add_subplot(111, projection='3d')
 verts=[[support_bridge[i,j*3:j*3+3] for j in range(3)] for i in range(support_bridge.shape[0])]
@@ -339,5 +339,5 @@ ax2.set_xlim(-50,50)
 ax2.set_ylim(-50,50)
 ax2.set_zlim(-50,50)
 
-plt.show()
-
+plt.show()'''
+2
