@@ -5,7 +5,7 @@ from mpl_toolkits.mplot3d import Axes3D
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 import numpy as np
 import Support_Generator
-
+'''''''''
 ListFinal=[]
 ListConT=[]
 toto=np.array([[5,5,2,0,5,2], [0,5,2,0,0,2],[0,0,1,5,0,1],[5,0,1,5,5,1]])
@@ -19,48 +19,49 @@ print(ListFinal)
 
 Shape_listfinal=np.shape(ListFinal)
 print(Shape_listfinal)
+'''
 def extremity_creation(axe,List):
     '''
         determined 2 faces exterimities of the support along x or y axis
     '''
-    Shape_listfinal=np.shape(ListFinal)
+    Shape_listfinal=np.shape(List)
     Faces=np.zeros((Shape_listfinal[0],Shape_listfinal[3]*2))
     if axe=='x':
         for j in range (0,Shape_listfinal[0]):
             for i in range(0,np.int(Shape_listfinal[2]/2)):
                 #First line is the face 1265 (j=0) and 2nd face is the face 3487 (j=1)
-                Faces[j,3*i]= ListFinal[0][0][i+j*2][0]
-                Faces[j,3*i+1]= ListFinal[0][0][i+j*2][1]
-                Faces[j,3*i+2]= ListFinal[0][0][i+j*2][2]
-                Faces[j,6+3*i]= ListFinal[1][0][1+j*2-i][0]
-                Faces[j,6+3*i+1]= ListFinal[1][0][1+i+j*2-i][1]
-                Faces[j,6+3*i+2]= ListFinal[1][0][1+i+j*2-i][2]
+                Faces[j,3*i]= List[0][0][i+j*2][0]
+                Faces[j,3*i+1]= List[0][0][i+j*2][1]
+                Faces[j,3*i+2]= List[0][0][i+j*2][2]
+                Faces[j,6+3*i]= List[1][0][1+j*2-i][0]
+                Faces[j,6+3*i+1]= List[1][0][1+i+j*2-i][1]
+                Faces[j,6+3*i+2]= List[1][0][1+i+j*2-i][2]
     elif axe=='y':
         for i in range(0,np.int(Shape_listfinal[2]/2)):
             #First is the face 2376
-            Faces[0,3*i]= ListFinal[0][0][i+1][0]
-            Faces[0,3*i+1]= ListFinal[0][0][i+1][1]
-            Faces[0,3*i+2]= ListFinal[0][0][i+1][2]
-            Faces[0,6+3*i]= ListFinal[1][0][2-i][0]
-            Faces[0,6+3*i+1]= ListFinal[1][0][2-i][1]
-            Faces[0,6+3*i+2]= ListFinal[1][0][2-i][2]
+            Faces[0,3*i]= List[0][0][i+1][0]
+            Faces[0,3*i+1]= List[0][0][i+1][1]
+            Faces[0,3*i+2]= List[0][0][i+1][2]
+            Faces[0,6+3*i]= List[1][0][2-i][0]
+            Faces[0,6+3*i+1]= List[1][0][2-i][1]
+            Faces[0,6+3*i+2]= List[1][0][2-i][2]
             #2nd face is 1485
-            Faces[1,3*i]= ListFinal[0][0][i*3][0]
-            Faces[1,3*i+1]= ListFinal[0][0][i*3][1]
-            Faces[1,3*i+2]= ListFinal[0][0][i*3][2]
-            Faces[1,6+3*i]= ListFinal[1][0][3-3*i][0]
-            Faces[1,6+3*i+1]= ListFinal[1][0][3-3*i][1]
-            Faces[1,6+3*i+2]= ListFinal[1][0][3-3*i][2]
+            Faces[1,3*i]= List[0][0][i*3][0]
+            Faces[1,3*i+1]= List[0][0][i*3][1]
+            Faces[1,3*i+2]= List[0][0][i*3][2]
+            Faces[1,6+3*i]= List[1][0][3-3*i][0]
+            Faces[1,6+3*i+1]= List[1][0][3-3*i][1]
+            Faces[1,6+3*i+2]= List[1][0][3-3*i][2]
     elif axe=='z':
         for j in range (0,Shape_listfinal[0]):
             for i in range(0,np.int(Shape_listfinal[2]/2)):
                 #First line is the face 1234 (j=0) and 2nd face is the face 5678(j=1)
-                Faces[j,3*i]= ListFinal[j][0][i][0]
-                Faces[j,3*i+1]= ListFinal[j][0][i][1]
-                Faces[j,3*i+2]= ListFinal[j][0][i][2]
-                Faces[j,6+3*i]= ListFinal[j][0][i+2][0]
-                Faces[j,6+3*i+1]= ListFinal[j][0][2+i][1]
-                Faces[j,6+3*i+2]= ListFinal[j][0][2+i][2]
+                Faces[j,3*i]= List[j][0][i][0]
+                Faces[j,3*i+1]= List[j][0][i][1]
+                Faces[j,3*i+2]= List[j][0][i][2]
+                Faces[j,6+3*i]= List[j][0][i+2][0]
+                Faces[j,6+3*i+1]= List[j][0][2+i][1]
+                Faces[j,6+3*i+2]= List[j][0][2+i][2]
 
     else:
         return "axe is not well define"
@@ -236,21 +237,22 @@ def ZigZag(List,p):
     return Faces
 
 
-def plot(FacesMatrix,figure):
+def plot(FacesMatrix,figure,my_mesh):
     FacesMatrix_shape=FacesMatrix.shape
     figure2 = plt.figure(figure)
     ax2 = figure2.add_subplot(111, projection='3d')
     verts=[[FacesMatrix[i,j*3:j*3+3] for j in range(4)] for i in range(FacesMatrix_shape[0])]
     ax2.add_collection3d(Poly3DCollection(verts, alpha=0.25, facecolors='#800000'))
+    ax2.add_collection3d(mplot3d.art3d.Poly3DCollection(my_mesh.vectors))
     ax2.set_xlabel('X')
     ax2.set_ylabel('Y')
     ax2.set_zlabel('Z')
-    ax2.set_xlim(0,5)
-    ax2.set_ylim(0,5)
-    ax2.set_zlim(0,5)
+    ax2.set_xlim(-30,30)
+    ax2.set_ylim(-30,30)
+    ax2.set_zlim(0,30)
     plt.show()
     return
-
+'''''''''
 Rec=Rectangular_simple_support(ListFinal)
 Linex=line_support('x',ListFinal,0.1)
 Liney=line_support('y',ListFinal,0.1)
@@ -260,7 +262,7 @@ grid=gridxy(ListFinal,0.5)
 plot(grid,1)
 #hape_line=Line.shape
 shape_grid=grid.shape
-
+'''''
 '''
 figure2 = plt.figure(2)
 ax2 = figure2.add_subplot(111, projection='3d')

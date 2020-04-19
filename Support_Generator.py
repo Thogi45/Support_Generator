@@ -86,7 +86,7 @@ def AreasWithSameAngle(vertices):
             i=i+1
         Zones.append(PetitZone)
 
-        print(a)
+
         za=za+1
         a=a+compteur+1
     return Zones
@@ -95,7 +95,7 @@ def FindContour(Zones):
     ListeContour=[]
     ij=-1
     while ij<len(Zones)-1:
-        print("TITI")
+
         ij = ij+1
         IndexContour=[]
         IndexContour.append(0)
@@ -167,7 +167,7 @@ def FindContour(Zones):
                 IsFollow1=Contour[0,3:6]
                 p=0
                 while p<len(Contour)-1:
-                    print("TOTO")
+
                     p=p+1
                     BisFollow=False
                     for i in range(p,len(Contour)):

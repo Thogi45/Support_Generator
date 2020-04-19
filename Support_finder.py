@@ -9,13 +9,11 @@ import math
 
 #Plot normal to mesh
 
-import Locate_STL
-my_mesh= mesh.Mesh.from_file(Locate_STL.STL1)
 
 
 
-normal=my_mesh.normals
-vertices= my_mesh.points
+
+'''''''''
 Shape_normal= np.shape(normal)
 Normal_dir_start1= np.zeros((Shape_normal[0],6))
 Normal_dir_start2= np.zeros((Shape_normal[0],6))
@@ -40,7 +38,7 @@ ax.set_zlabel('Z')
 plt.xlim(-50,50)
 plt.ylim(-50,50)
 ax.set_zlim(0,50)
-
+'''''
 def support_45deg_rule (normal, vertices):
     '''
     45° rule for overhangs
@@ -327,32 +325,19 @@ def needed_support_Bridge_rule (normal, vertices):
     Required_support=Required_support[0:n]
 
     return Required_support
-support_angle=support_45deg_rule(normal,vertices)
-support_bridge=needed_support_Bridge_rule(normal,vertices)
-i=0
-p=len(support_bridge)
-k=0;
-while i<p:
-    if all(support_bridge[k][0,0:9]== 0):
-        del support_bridge[k]
-    else:
-        k=k+1
 
-    p=p-1
-print(support_bridge)
-liste_support=[]
-liste_support=support_bridge+support_angle
-from Support_Generator import AreasWithSameAngle
-from Support_Generator import FindContour
-from Support_Generator import Projection
-ListeContour=[]
-for i in range(len(liste_support)):
-    A=AreasWithSameAngle(liste_support[i])
-    ListeContour.append(FindContour(A))
 
-ListeProjete=Projection(ListeContour)
 
-a=1
+'''''''''
+Linex=line_support('x',ListeProjete,0.1)
+Liney=line_support('y',ListeProjete,0.1)
+Linez=line_support('z',ListeProjete,0.1)
+grid=gridxy(ListeProjete,0.5)
+#print(ZigZag(ListFinal,0.1))
+
+#hape_line=Line.shape
+shape_grid=grid.shape
+'''''
 '''
 figure2 = plt.figure(2)
 ax2 = figure2.add_subplot(111, projection='3d')
