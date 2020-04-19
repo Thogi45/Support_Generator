@@ -10,7 +10,7 @@ from skimage import measure
 '''mesh = mesh.Mesh.from_file("C:\\Users\\DCLIC\\PycharmProjects\\Support_Generator\\Demi_Cercle.stl")
 normal = mesh.normals
 vertices = np.array([[5.,5.,1.,0.,5.,1.,5.,0.,1.],[0.,0.,1.,5.,0.,1.,0.,5.,1.],[-2.,-1.,0.,-3.,-1.,0.,-3.,-2.,0.]])
-cubes_test = np.array([[[1.,1.,1.,1.,1.],[1.,1.,1.,1.,1.],[1.,1.,1.,1.,1.],[1.,1.,1.,1.,1.],[1.,1.,1.,1.,1.]],[[1.,1.,1.,1.,1.],[1.,0.,-1.,0.,1.],[1.,0.,-1.,0.,1.],[1.,0.,-1.,0.,1.],[1.,1.,1.,1.,1.]],[[1.,1.,1.,1.,1.],[1.,0.,-1.,0.,1.],[1.,0.,-1.,0.,1.],[1.,0.,-1.,0.,1.],[1.,1.,1.,1.,1.]],[[1.,1.,1.,1.,1.],[1.,0.,-1.,0.,1.],[1.,0.,-1.,0.,1.],[1.,0.,-1.,0.,1.],[1.,1.,1.,1.,1.]],[[1.,1.,1.,1.,1.],[1.,1.,1.,1.,1.],[1.,1.,1.,1.,1.],[1.,1.,1.,1.,1.],[1.,1.,1.,1.,1.]]])
+cubes_test = np.array([[[1.,1.,1.,1.,1.],[1.,1.,1.,1.,1.],[1.,1.,1.,1.,1.],[1.,1.,1.,1.,1.],[1.,1.,1.,1.,1.]],[[1.,1.,1.,1.,1.],[1.,0.,0.,0.,1.],[1.,0.,0.,0.,1.],[1.,0.,0.,0.,1.],[1.,1.,1.,1.,1.]],[[1.,1.,1.,1.,1.],[1.,0.,-1.,0.,1.],[1.,0.,-1.,0.,1.],[1.,0.,-1.,0.,1.],[1.,1.,1.,1.,1.]],[[1.,1.,1.,1.,1.],[1.,0.,0.,0.,1.],[1.,0.,0.,0.,1.],[1.,0.,0.,0.,1.],[1.,1.,1.,1.,1.]],[[1.,1.,1.,1.,1.],[1.,1.,1.,1.,1.],[1.,1.,1.,1.,1.],[1.,1.,1.,1.,1.],[1.,1.,1.,1.,1.]]])
 verts2, faces2, normals2, values2 = measure.marching_cubes_lewiner(cubes_test, 0.,  spacing=(1,1,1))
 verts2[:,0]=verts2[:,0]-np.mean(verts2[:,0]) ##translate the coordinates of mesh vertices and move to center
 verts2[:,1]=verts2[:,1]-np.mean(verts2[:,1]) ##translate the coordinates of mesh vertices and move to center
@@ -70,7 +70,7 @@ def AreasWithSameAngle(vertices):
         len1= len(plan)
         i=0
         compteur=0
-        while i < len1-1 :
+        while i < len1:
             P1=plan[0,0:3]
             P2=plan[0,3:6]
             P3=plan[0,6:9]
@@ -86,7 +86,7 @@ def AreasWithSameAngle(vertices):
             i=i+1
         Zones.append(PetitZone)
 
-        print(a)
+
         za=za+1
         a=a+compteur+1
     return Zones
@@ -95,7 +95,7 @@ def FindContour(Zones):
     ListeContour=[]
     ij=-1
     while ij<len(Zones)-1:
-        print("TITI")
+
         ij = ij+1
         IndexContour=[]
         IndexContour.append(0)
@@ -167,7 +167,7 @@ def FindContour(Zones):
                 IsFollow1=Contour[0,3:6]
                 p=0
                 while p<len(Contour)-1:
-                    print("TOTO")
+
                     p=p+1
                     BisFollow=False
                     for i in range(p,len(Contour)):
@@ -200,6 +200,28 @@ def FindContour(Zones):
 
                 ListeContour.append(Contour)
     return ListeContour
+
+def Projection(ListeContour):
+    ListeProjete=[]
+    ListC2=[]
+    ListC2=cp.deepcopy(ListeContour)
+    ListC3=[]
+    ListC4=[]
+    if len(ListC2)!=0:
+        ListC3=ListC2[0]
+        ListC4=ListeContour[0]
+    if len(ListC2)>0:
+        for i in range(1,len(ListC2)):
+            ListC3=ListC3+ListC2[i]
+            ListC4=ListC4+ListeContour[i]
+    for ij in range(len(ListC3)):
+        for i in range(len(ListC3[ij])):
+
+            ListC3[ij][i][2]=0
+            ListC3[ij][i][5]=0
+    ListeProjete.append(ListC4)
+    ListeProjete.append(ListC3)
+    return ListeProjete
 
 #Zones = AreasWithSameAngle(vertices)
 #ListeContour = FindContour(Zones)
@@ -371,18 +393,6 @@ for ij in range(len(ListeContour)):
 '''''''''''
 '''''''''''
 ### Projection à faire
-ListeProjete=[]
-ListC2=[]
-ListC2=cp.deepcopy(ListeContour)
-for ij in range(len(ListC2)):
-    for i in range(len(ListC2[ij])):
-        ListC2[ij][i,2]=0
-        ListC2[ij][i,5]=0
-
-
-ListeProjete.append(ListeContour)
-ListeProjete.append(ListC2)
-k=ListeProjete[1][0]
 
 def func(x, y):
     return x*(1-x)*np.cos(4*np.pi*x) * np.sin(4*np.pi*y**2)**2

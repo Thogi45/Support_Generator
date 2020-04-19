@@ -1,7 +1,7 @@
 import os,sys
 from stl import mesh, Mesh
 import glob
-
+import time
 path=os.path.dirname(sys.argv[0])
 
 files = os.listdir(path)
@@ -26,11 +26,13 @@ while OK2==False:
     for k in range(len(AllF)):
         AllDF.remove(AllF[k])
     print("STL AVAILABLE IN THE FOLDER: ", path)
+    time.sleep(2)
     if len(STL)==0:
         print("NO STL FILE, please go to another folder")
     for name in STL:
         print(name," ....... ",i)
         i=i+1
+    time.sleep(2)
     print("NAVIGATION INTO FOLDERS")
     for name in AllDF:
         print("Go into folder: ",name," ....... ",i)
@@ -38,6 +40,7 @@ while OK2==False:
     print("Look back in another folder ....... ",0)
     typea=0
     OK=False
+    time.sleep(2)
     while OK==False:
         typea=0
         while typea!=1:

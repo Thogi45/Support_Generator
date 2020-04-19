@@ -9,13 +9,11 @@ import math
 
 #Plot normal to mesh
 
-import Locate_STL
-my_mesh= mesh.Mesh.from_file(Locate_STL.STL1)
 
 
 
-normal=my_mesh.normals
-vertices= my_mesh.points
+
+'''''''''
 Shape_normal= np.shape(normal)
 Normal_dir_start1= np.zeros((Shape_normal[0],6))
 Normal_dir_start2= np.zeros((Shape_normal[0],6))
@@ -40,7 +38,7 @@ ax.set_zlabel('Z')
 plt.xlim(-50,50)
 plt.ylim(-50,50)
 ax.set_zlim(0,50)
-
+'''''
 def support_45deg_rule (normal, vertices):
     '''
     45° rule for overhangs
@@ -187,7 +185,7 @@ def support_45deg_rule (normal, vertices):
                 Required_support[m-1]=np.vstack((Required_support[m-1],b))
         i+=1
     Required_support=Required_support[0:m]
-    return a
+    return Required_support
 
 def needed_support_Bridge_rule (normal, vertices):
     '''
@@ -325,11 +323,21 @@ def needed_support_Bridge_rule (normal, vertices):
                 Required_support[k]=np.zeros((Shape_required_support[1],Shape_required_support[2]))
                 n=0
     Required_support=Required_support[0:n]
-    return Required_support
-support_angle=support_45deg_rule(normal,vertices)
-support_bridge=needed_support_Bridge_rule(normal,vertices)
-print(support_bridge)
 
+    return Required_support
+
+
+
+'''''''''
+Linex=line_support('x',ListeProjete,0.1)
+Liney=line_support('y',ListeProjete,0.1)
+Linez=line_support('z',ListeProjete,0.1)
+grid=gridxy(ListeProjete,0.5)
+#print(ZigZag(ListFinal,0.1))
+
+#hape_line=Line.shape
+shape_grid=grid.shape
+'''''
 '''
 figure2 = plt.figure(2)
 ax2 = figure2.add_subplot(111, projection='3d')
