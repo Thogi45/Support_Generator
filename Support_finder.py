@@ -187,7 +187,7 @@ def support_45deg_rule (normal, vertices):
                 Required_support[m-1]=np.vstack((Required_support[m-1],b))
         i+=1
     Required_support=Required_support[0:m]
-    return a
+    return Required_support
 
 def needed_support_Bridge_rule (normal, vertices):
     '''
@@ -325,11 +325,34 @@ def needed_support_Bridge_rule (normal, vertices):
                 Required_support[k]=np.zeros((Shape_required_support[1],Shape_required_support[2]))
                 n=0
     Required_support=Required_support[0:n]
+
     return Required_support
 support_angle=support_45deg_rule(normal,vertices)
 support_bridge=needed_support_Bridge_rule(normal,vertices)
-print(support_bridge)
+i=0
+p=len(support_bridge)
+k=0;
+while i<p:
+    if all(support_bridge[k][0,0:9]== 0):
+        del support_bridge[k]
+    else:
+        k=k+1
 
+    p=p-1
+print(support_bridge)
+liste_support=[]
+liste_support=support_bridge+support_angle
+from Support_Generator import AreasWithSameAngle
+from Support_Generator import FindContour
+from Support_Generator import Projection
+ListeContour=[]
+for i in range(len(liste_support)):
+    A=AreasWithSameAngle(liste_support[i])
+    ListeContour.append(FindContour(A))
+
+ListeProjete=Projection(ListeContour)
+
+a=1
 '''
 figure2 = plt.figure(2)
 ax2 = figure2.add_subplot(111, projection='3d')
