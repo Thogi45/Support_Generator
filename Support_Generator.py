@@ -203,8 +203,10 @@ def FindContour(Zones):
 
 def Projection(ListeContour):
     ListeProjete=[]
-    ListC2=[]
+
+
     ListC2=cp.deepcopy(ListeContour)
+
     ListC3=[]
     ListC4=[]
     if len(ListC2)!=0:
@@ -219,8 +221,12 @@ def Projection(ListeContour):
 
             ListC3[ij][i][2]=0
             ListC3[ij][i][5]=0
-    ListeProjete.append(ListC4)
-    ListeProjete.append(ListC3)
+    for i in range(len(ListC2)):
+        ListeProjete1=[]
+        ListeProjete1.append(ListC4[i])
+        ListeProjete1.append(ListC3[i])
+        ListeProjete.append(ListeProjete1)
+
     return ListeProjete
 
 #Zones = AreasWithSameAngle(vertices)
