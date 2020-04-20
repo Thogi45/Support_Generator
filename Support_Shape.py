@@ -34,8 +34,8 @@ def extremity_creation(axe,List):
                 Faces[j,3*i+1]= List[0][i+j*2][1]
                 Faces[j,3*i+2]= List[0][i+j*2][2]
                 Faces[j,6+3*i]= List[1][1+j*2-i][0]
-                Faces[j,6+3*i+1]= List[1][1+i+j*2-i][1]
-                Faces[j,6+3*i+2]= List[1][1+i+j*2-i][2]
+                Faces[j,6+3*i+1]= List[1][1+j*2-i][1]
+                Faces[j,6+3*i+2]= List[1][1+j*2-i][2]
     elif axe=='y':
         for i in range(0,np.int(Shape_listfinal[1]/2)):
             #First is the face 2376
@@ -133,8 +133,14 @@ def line_support(axes,List,p):
             if Faces[0,np.int(a)]!=Faces[0,np.int(b)]:
                 i1=i2=i3=i4=0
 
-        if axes=='x':
+        if Faces[0,0]!= Faces[0,3] or Faces[0,0]!= Faces[0,6] or Faces[0,0]!= Faces[0,9]:
             nx=np.int(np.abs(Faces[0,0]-Faces[0,3])*(1/p))-1
+            print(Faces)
+            l=2
+            while nx == -1:
+                nx=np.int(np.abs(Faces[0,0]-Faces[0,3*l])*(1/p))-1
+                l+=1
+            print(nx)
             a=np.zeros((nx,12))
             if Faces[0,1]>Faces[1,1]:
                 for i in range(1, nx+1):
@@ -144,8 +150,12 @@ def line_support(axes,List,p):
                     a[i-1,:]=np.array([Faces[0,0],Faces[0,1]+i*p,Faces[0,2]+(i*d1*i1)/nx,Faces[0,3],Faces[0,4]+i*p,Faces[0,5]+(i*d2*i2)/nx,Faces[0,6],Faces[0,7]+i*p,Faces[0,8]+(i*d3*i3)/nx,Faces[0,9],Faces[0,10]+i*p,Faces[0,11]+(i*d4*i4)/nx])
             Faces= np.insert(Faces,1, a, axis=0)
 
-        elif axes=='y':
+        elif Faces[0,1]!= Faces[0,4] or Faces[0,1]!= Faces[0,7] or Faces[0,1]!= Faces[0,10]:
             ny=np.int(np.abs(Faces[0,1]-Faces[0,4])*(1/p))-1
+            l=2
+            while ny == -1:
+                ny=np.int(np.abs(Faces[0,1]-Faces[0,3*l+1])*(1/p))-1
+                l+=1
             a=np.zeros((ny,12))
             if Faces[0,0]>Faces[1,0]:
                 for i in range(1, ny+1):

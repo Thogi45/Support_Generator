@@ -44,7 +44,7 @@ for i in range(len(liste_support)):
     ListeContour.append(FindContour(A))
 
 ListeProjete=Projection(ListeContour)
-'''''''''
+'''
 print(ListeProjete[:][:][:][:])
 ListeZone = np.concatenate((ListeProjete[0][0][:][:], ListeProjete[1][0][:][:]),axis=0)
 print(ListeZone)
@@ -52,15 +52,30 @@ print(np.shape(ListeZone))
 
 print(np.shape(ListeProjete[:][][:][:]))
 print(np.shape(ListeProjete))'''
-'''''''''
+
 from Support_Shape import Rectangular_simple_support
+from Support_Shape import gridxy
+from Support_Shape import ZigZag
 from Support_Shape import plot
 List_shape= np.shape(ListeProjete)
-'''''
-'''for i in range (0,List_shape[1]):
+print(ListeProjete)
+Faces=[]
+for i in range (0,List_shape[1]):
     Rec=Rectangular_simple_support(ListeProjete[:][i][:][:])
-    print(ListeProjete[:][i][:][:])
-    plot(Rec,1,my_mesh)'''
+    Faces.append(Rec)
+if List_shape[1]==1:
+    pass
+elif List_shape[1]==2:
+    Faces=np.concatenate((Faces[0],Faces[1]),axis=0)
+elif List_shape[1]==3:
+    Faces=np.concatenate((Faces[0],Faces[1],Faces[2]),axis=0)
+elif List_shape[1]==4:
+    Faces=np.concatenate((Faces[0],Faces[1],Faces[2],Faces[3]),axis=0)
+else:
+    print("Pb, too much zones, modify code in main.py")
+plot(Faces,1,my_mesh)
+
+#plot(Faces,1,my_mesh)
 
 #Rec=Rectangular_simple_support(ListeProjete)
 #plot(Rec,1,my_mesh)
