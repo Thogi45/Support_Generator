@@ -203,22 +203,26 @@ def FindContour(Zones):
 
 def Projection(ListeContour):
     ListeProjete=[]
-
-
     ListC2=cp.deepcopy(ListeContour)
-
     ListC3=[]
     ListC4=[]
     if len(ListC2)!=0:
         ListC3=ListC2[0]
+        if ListC3[0][0,0]==ListC3[0][1,0]:
+            ListC3[0]=Organization(ListC3[0])
         ListC4=ListeContour[0]
+        if ListC4[0][0,0]==ListC4[0][1,0]:
+            ListC4[0]=Organization(ListC4[0])
     if len(ListC2)>0:
         for i in range(1,len(ListC2)):
             ListC3=ListC3+ListC2[i]
+            if ListC3[i][0,0]==ListC3[i][1,0]:
+                ListC3[i]=Organization(ListC3[0])
             ListC4=ListC4+ListeContour[i]
+            if ListC4[i][0,0]==ListC4[i][1,0]:
+                ListC4[i]=Organization(ListC4[i])
     for ij in range(len(ListC3)):
         for i in range(len(ListC3[ij])):
-
             ListC3[ij][i][2]=0
             ListC3[ij][i][5]=0
     for i in range(len(ListC2)):
@@ -229,6 +233,12 @@ def Projection(ListeContour):
 
     return ListeProjete
 
+def Organization(Contour):
+    A=Contour[0]
+    A=np.reshape(A,newshape=(1,6))
+    Contour=np.delete(Contour,0,axis=0)
+    c=np.append(Contour,A,axis=0)
+    return c
 #Zones = AreasWithSameAngle(vertices)
 #ListeContour = FindContour(Zones)
 
