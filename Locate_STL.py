@@ -26,13 +26,13 @@ while OK2==False:
     for k in range(len(AllF)):
         AllDF.remove(AllF[k])
     print("STL AVAILABLE IN THE FOLDER: ", path)
-    time.sleep(2)
+
     if len(STL)==0:
         print("NO STL FILE, please go to another folder")
     for name in STL:
         print(name," ....... ",i)
         i=i+1
-    time.sleep(2)
+
     print("NAVIGATION INTO FOLDERS")
     for name in AllDF:
         print("Go into folder: ",name," ....... ",i)
@@ -81,4 +81,5 @@ while OK2==False:
             OK=True
 
 k=0
+
 
