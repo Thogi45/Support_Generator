@@ -39,6 +39,10 @@ plt.xlim(-50,50)
 plt.ylim(-50,50)
 ax.set_zlim(0,50)
 '''''
+'''mesh = mesh.Mesh.from_file("C:\\Users\\thoma\\PycharmProjects\\Support_Generator\\Y_40.stl")
+normal = mesh.normals
+vertices = mesh.points
+print(vertices)'''
 def support_45deg_rule (normal, vertices):
     '''
     45° rule for overhangs
@@ -326,29 +330,3 @@ def needed_support_Bridge_rule (normal, vertices):
 
     return Required_support
 
-
-
-'''''''''
-Linex=line_support('x',ListeProjete,0.1)
-Liney=line_support('y',ListeProjete,0.1)
-Linez=line_support('z',ListeProjete,0.1)
-grid=gridxy(ListeProjete,0.5)
-#print(ZigZag(ListFinal,0.1))
-
-#hape_line=Line.shape
-shape_grid=grid.shape
-'''''
-'''
-figure2 = plt.figure(2)
-ax2 = figure2.add_subplot(111, projection='3d')
-verts=[[support_bridge[i,j*3:j*3+3] for j in range(3)] for i in range(support_bridge.shape[0])]
-ax2.add_collection3d(Poly3DCollection(verts, alpha=0.25, facecolors='#800000'))
-ax2.set_xlabel('X')
-ax2.set_ylabel('Y')
-ax2.set_zlabel('Z')
-ax2.set_xlim(-50,50)
-ax2.set_ylim(-50,50)
-ax2.set_zlim(-50,50)
-
-plt.show()'''
-2
