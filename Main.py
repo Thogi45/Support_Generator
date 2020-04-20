@@ -43,7 +43,8 @@ for i in range(len(liste_support)):
     A=AreasWithSameAngle(liste_support[i])
     ListeContour.append(FindContour(A))
 
-'''ListeProjete=Projection(ListeContour)
+ListeProjete=Projection(ListeContour)
+'''''''''
 print(ListeProjete[:][:][:][:])
 ListeZone = np.concatenate((ListeProjete[0][0][:][:], ListeProjete[1][0][:][:]),axis=0)
 print(ListeZone)
@@ -51,10 +52,11 @@ print(np.shape(ListeZone))
 
 print(np.shape(ListeProjete[:][][:][:]))
 print(np.shape(ListeProjete))'''
-
+'''''''''
 from Support_Shape import Rectangular_simple_support
 from Support_Shape import plot
 List_shape= np.shape(ListeProjete)
+'''''
 '''for i in range (0,List_shape[1]):
     Rec=Rectangular_simple_support(ListeProjete[:][i][:][:])
     print(ListeProjete[:][i][:][:])
