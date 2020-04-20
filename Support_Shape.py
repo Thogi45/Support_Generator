@@ -8,17 +8,17 @@ import Support_Generator
 
 '''ListFinal=[]
 ListConT=[]
-toto=np.array([[5,5,2,0,5,2], [0,5,2,0,0,2],[0,0,1,5,0,1],[5,0,1,5,5,1]])
+#toto=np.array([[5,5,2,0,5,2], [0,5,2,0,0,2],[0,0,1,5,0,1],[5,0,1,5,5,1]])
+toto=np.array([[5,20,35,0,20,35], [0,20,35,0,2.5,20],[0,2.5,20,5,2.5,20],[5,2.5,20,5,20,35]])
 ListConT.append(toto)
 ListFinal.append(ListConT)
 ListProj=[]
-toto2=np.array([[5,5,0,0,5,0], [0,5,0,0,0,0],[0,0,0,5,0,0],[5,0,0,5,5,0]])
+#toto2=np.array([[5,5,0,0,5,0], [0,5,0,0,0,0],[0,0,0,5,0,0],[5,0,0,5,5,0]])
+toto2=np.array([[5,20,0,0,20,0], [0,20,0,0,-2.5,0],[0,2.5,0,5,2.5,0],[5,2.5,0,5,20,0]])
 ListProj.append(toto2)
 ListFinal.append(ListProj)
-print(ListFinal)
 
-Shape_listfinal=np.shape(ListFinal)
-print(Shape_listfinal)'''
+Shape_listfinal=np.shape(ListFinal)'''
 
 def extremity_creation(axe,List):
     '''
@@ -34,8 +34,8 @@ def extremity_creation(axe,List):
                 Faces[j,3*i+1]= List[0][i+j*2][1]
                 Faces[j,3*i+2]= List[0][i+j*2][2]
                 Faces[j,6+3*i]= List[1][1+j*2-i][0]
-                Faces[j,6+3*i+1]= List[1][1+i+j*2-i][1]
-                Faces[j,6+3*i+2]= List[1][1+i+j*2-i][2]
+                Faces[j,6+3*i+1]= List[1][1+j*2-i][1]
+                Faces[j,6+3*i+2]= List[1][1+j*2-i][2]
     elif axe=='y':
         for i in range(0,np.int(Shape_listfinal[1]/2)):
             #First is the face 2376
@@ -133,8 +133,15 @@ def line_support(axes,List,p):
             if Faces[0,np.int(a)]!=Faces[0,np.int(b)]:
                 i1=i2=i3=i4=0
 
-        if axes=='x':
-            nx=np.int(np.abs(Faces[0,0]-Faces[0,3])*(1/p))-1
+        #if Faces[0,0]!= Faces[0,3] or Faces[0,0]!= Faces[0,6] or Faces[0,0]!= Faces[0,9]:
+        if axes == 'x':
+            nx=np.int(np.abs(Faces[0,1]-Faces[1,4])*(1/p))-1
+            print(Faces)
+            l=2
+            while nx == -1:
+                nx=np.int(np.abs(Faces[0,0]-Faces[1,3*l+1])*(1/p))-1
+                l+=1
+            print(nx)
             a=np.zeros((nx,12))
             if Faces[0,1]>Faces[1,1]:
                 for i in range(1, nx+1):
@@ -144,8 +151,14 @@ def line_support(axes,List,p):
                     a[i-1,:]=np.array([Faces[0,0],Faces[0,1]+i*p,Faces[0,2]+(i*d1*i1)/nx,Faces[0,3],Faces[0,4]+i*p,Faces[0,5]+(i*d2*i2)/nx,Faces[0,6],Faces[0,7]+i*p,Faces[0,8]+(i*d3*i3)/nx,Faces[0,9],Faces[0,10]+i*p,Faces[0,11]+(i*d4*i4)/nx])
             Faces= np.insert(Faces,1, a, axis=0)
 
-        elif axes=='y':
-            ny=np.int(np.abs(Faces[0,1]-Faces[0,4])*(1/p))-1
+        #elif Faces[0,1]!= Faces[0,4] or Faces[0,1]!= Faces[0,7] or Faces[0,1]!= Faces[0,10]:
+        elif axes == 'y':
+            ny=np.int(np.abs(Faces[0,0]-Faces[1,3])*(1/p))-1
+            print(ny)
+            l=2
+            while ny == -1:
+                ny=np.int(np.abs(Faces[0,1]-Faces[1,3*l])*(1/p))-1
+                l+=1
             a=np.zeros((ny,12))
             if Faces[0,0]>Faces[1,0]:
                 for i in range(1, ny+1):
@@ -195,6 +208,7 @@ def ZigZag(List,p):
     Faces_all_y=extremity_creation('y',List)
     i1=i2=d1=d2=0
     m=np.zeros((1,1))
+    print(Faces_all_y)
     if Faces_all_y[0,2]>Faces_all_y[0,5]:
         i1=-1
         d1=np.int(np.abs(Faces_all_y[0,2]-Faces_all_y[0,5]))
@@ -216,9 +230,9 @@ def ZigZag(List,p):
     else:
         i2=0
     ny=np.int(np.abs(Faces_all_y[0,1]-Faces_all_y[0,4])*(1/(p*2)))
+    print(ny)
     a1=np.zeros((ny,12))
     a2=np.zeros((ny,12))
-    print(i1,i2)
     if Faces_all_y[0,1]>Faces_all_y[0,4]:
         p=-p
     else:
@@ -227,11 +241,12 @@ def ZigZag(List,p):
         if i==0:
             a1[i,:]=np.array([Faces_all_y[0,0],Faces_all_y[0,1]+i*(p*2),Faces_all_y[0,2],Faces_all_y[0,3],Faces_all_y[0,1]+p,Faces_all_y[0,5]+d1+(i1*d1)/ny,Faces_all_y[0,6],Faces_all_y[0,1]+p,Faces_all_y[0,8],Faces_all_y[0,9],Faces_all_y[0,10]+i*(p*2),Faces_all_y[0,11]+d2+(i2*d2)/ny])
             a2[i,:]=np.array([Faces_all_y[1,0],Faces_all_y[1,1]+p,Faces_all_y[1,2],Faces_all_y[1,3],Faces_all_y[1,1]+2*p,Faces_all_y[1,5]+d1+(i1*d1)/ny,Faces_all_y[1,6],Faces_all_y[1,1]+2*p,Faces_all_y[1,8],Faces_all_y[1,9],Faces_all_y[1,10]+p,Faces_all_y[1,11]+d2+(i2*d2)/ny])
-
+            #a2[i,:]=np.array([Faces_all_y[1,0],Faces_all_y[1,1]+p,Faces_all_y[1,2],Faces_all_y[1,3],Faces_all_y[1,1]+2*p,Faces_all_y[1,5]+d1+(i1*d1)/ny,Faces_all_y[1,6],Faces_all_y[1,1]+2*p,Faces_all_y[1,8],Faces_all_y[1,9],Faces_all_y[1,10]+p,Faces_all_y[1,11]+d2+(i2*d2)/ny])
         else:
-            a1[i,:]= np.array([Faces_all_y[0,0],Faces_all_y[0,1]+i*(p*2),a1[i-1,2]+(i1*d1)/ny,Faces_all_y[0,3],Faces_all_y[0,4]+a1[i-1,1]+3*p,a1[i-1,5]+(i1*d1)/ny,Faces_all_y[0,6],Faces_all_y[0,7]+a1[i-1,1]+3*p,a1[i-1,8]+(i2*d2)/ny,Faces_all_y[0,9],Faces_all_y[0,10]+i*(p*2),a1[i-1,11]+(i2*d2)/ny])
-            a2[i,:]=np.array([Faces_all_y[1,0],a2[i-1,1]+p*2,a2[i-1,2]+(i1*d1)/ny,Faces_all_y[1,3],Faces_all_y[1,4]+a2[i-1,1]+3*p,a2[i-1,5]+(i1*d1)/ny,Faces_all_y[1,6],Faces_all_y[1,7]+a2[i-1,1]+3*p,a2[i-1,8]+(i2*d2)/ny,Faces_all_y[1,9],a2[i-1,10]+p*2,a2[i-1,11]+(i2*d2)/ny])
-    print(a1,a2)
+            a1[i,:]= np.array([Faces_all_y[0,0],Faces_all_y[0,1]+i*(p*2),a1[i-1,2]+(i1*d1)/ny,Faces_all_y[0,3],a1[i-1,1]+3*p,a1[i-1,5]+(i1*d1)/ny,Faces_all_y[0,6],a1[i-1,1]+3*p,a1[i-1,8]+(i2*d2)/ny,Faces_all_y[0,9],Faces_all_y[0,10]+i*(p*2),a1[i-1,11]+(i2*d2)/ny])
+            a2[i,:]=np.array([Faces_all_y[1,0],a2[i-1,1]+p*2,a2[i-1,2]+(i1*d1)/ny,Faces_all_y[1,3],a2[i-1,1]+3*p,a2[i-1,5]+(i1*d1)/ny,Faces_all_y[1,6],a2[i-1,1]+3*p,a2[i-1,8]+(i2*d2)/ny,Faces_all_y[1,9],a2[i-1,10]+p*2,a2[i-1,11]+(i2*d2)/ny])
+    print("a1",a1)
+    print("a2",a2)
     a= np.concatenate((a1,a2),axis=0)
     Faces=np.concatenate((Facesx,a),axis=0)
     return Faces
@@ -253,17 +268,19 @@ def plot(FacesMatrix,figure,my_mesh):
     plt.show()
     return
 
-'''''''''
-Rec=Rectangular_simple_support(ListFinal)
-Linex=line_support('x',ListFinal,0.1)
-Liney=line_support('y',ListFinal,0.1)
+
+'''Rec=Rectangular_simple_support(ListFinal)
+Linex=line_support('x',ListFinal,1)
+Liney=line_support('y',ListFinal,1)
 Linez=line_support('z',ListFinal,0.1)
-grid=gridxy(ListFinal,0.5)
-#print(ZigZag(ListFinal,0.1))
-plot(grid,1)
+grid=grid3D(ListFinal,1)
+ZZ = ZigZag(ListFinal,1)
+exx=extremity_creation('y',ListFinal)
+print(exx)
+plot(ZZ,1)
 #hape_line=Line.shape
-shape_grid=grid.shape
-'''''
+#shape_grid=grid.shape'''
+
 '''
 figure2 = plt.figure(2)
 ax2 = figure2.add_subplot(111, projection='3d')
