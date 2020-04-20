@@ -40,7 +40,6 @@ while OK2==False:
     print("Look back in another folder ....... ",0)
     typea=0
     OK=False
-    time.sleep(2)
     while OK==False:
         typea=0
         while typea!=1:
