@@ -12,6 +12,7 @@ from Support_Shape import Rectangular_simple_support
 from Support_Shape import gridxy
 from Support_Shape import ZigZag
 from Support_Shape import plot
+from Hello import ShapeChoice
 
 
 
@@ -46,56 +47,58 @@ ListeContour=[]
 for i in range(len(liste_support)):
     A=AreasWithSameAngle(liste_support[i])
     ListeContour.append(FindContour(A))
-
 ListeProjete=Projection(ListeContour)
 
-from Hello import ShapeChoice
-
-Choice=ShapeChoice()
-List_shape= np.shape(ListeProjete)
-Faces=[]
-if Choice==2:
-    for i in range (0,List_shape[1]):
-        Rec=gridxy(ListeProjete[:][i][:][:],1)
-        Faces.append(Rec)
-    if List_shape[1]==1:
-        pass
-    elif List_shape[1]==2:
-        Faces=np.concatenate((Faces[0],Faces[1]),axis=0)
-    elif List_shape[1]==3:
-        Faces=np.concatenate((Faces[0],Faces[1],Faces[2]),axis=0)
-    elif List_shape[1]==4:
-        Faces=np.concatenate((Faces[0],Faces[1],Faces[2],Faces[3]),axis=0)
-    else:
-        print("Pb, too much zones, modify code in main.py")
-elif Choice==1:
-    for i in range (0,List_shape[1]):
-        Rec=Rectangular_simple_support(ListeProjete[:][i][:][:])
-        Faces.append(Rec)
-    if List_shape[1]==1:
-        pass
-    elif List_shape[1]==2:
-        Faces=np.concatenate((Faces[0],Faces[1]),axis=0)
-    elif List_shape[1]==3:
-        Faces=np.concatenate((Faces[0],Faces[1],Faces[2]),axis=0)
-    elif List_shape[1]==4:
-        Faces=np.concatenate((Faces[0],Faces[1],Faces[2],Faces[3]),axis=0)
-    else:
-        print("Pb, too much zones, modify code in main.py")
-elif Choice==3:
-    for i in range (0,List_shape[1]):
-        Rec=ZigZag(ListeProjete[:][i][:][:],1)
-        Faces.append(Rec)
-    if List_shape[1]==1:
-        pass
-    elif List_shape[1]==2:
-        Faces=np.concatenate((Faces[0],Faces[1]),axis=0)
-    elif List_shape[1]==3:
-        Faces=np.concatenate((Faces[0],Faces[1],Faces[2]),axis=0)
-    elif List_shape[1]==4:
-        Faces=np.concatenate((Faces[0],Faces[1],Faces[2],Faces[3]),axis=0)
-    else:
-        print("Pb, too much zones, modify code in main.py")
+if len(ListeProjete)==0:
+    print("you do not need any support")
+else:
+    Choice=ShapeChoice()
+    print(ListeProjete[:][0][:][:])
+    List_shape= np.shape(ListeProjete)
+    print(List_shape)
+    Faces=[]
+    if Choice==1:
+        for i in range (0,List_shape[0]):
+            Rec=Rectangular_simple_support(ListeProjete[:][i][:][:])
+            Faces.append(Rec)
+        if List_shape[0]==1:
+            Faces = Rec
+        if List_shape[0]==2:
+            Faces=np.concatenate((Faces[0],Faces[1]),axis=0)
+        elif List_shape[0]==3:
+            Faces=np.concatenate((Faces[0],Faces[1],Faces[2]),axis=0)
+        elif List_shape[0]==4:
+            Faces=np.concatenate((Faces[0],Faces[1],Faces[2],Faces[3]),axis=0)
+        else:
+            print("Pb, too much zones, modify code in main.py")
+    elif Choice==2:
+        for i in range (0,List_shape[0]):
+            Rec=gridxy(ListeProjete[:][i][:][:],1)
+            Faces.append(Rec)
+        if List_shape[0]==1:
+            Faces = Rec
+        elif List_shape[0]==2:
+            Faces=np.concatenate((Faces[0],Faces[1]),axis=0)
+        elif List_shape[0]==3:
+            Faces=np.concatenate((Faces[0],Faces[1],Faces[2]),axis=0)
+        elif List_shape[0]==4:
+            Faces=np.concatenate((Faces[0],Faces[1],Faces[2],Faces[3]),axis=0)
+        else:
+            print("Pb, too much zones, modify code in main.py")
+    elif Choice==3:
+        for i in range (0,List_shape[1]):
+            Rec=ZigZag(ListeProjete[:][i][:][:],1)
+            Faces.append(Rec)
+        if List_shape[0]==1:
+            Faces = Rec
+        elif List_shape[0]==2:
+            Faces=np.concatenate((Faces[0],Faces[1]),axis=0)
+        elif List_shape[0]==3:
+            Faces=np.concatenate((Faces[0],Faces[1],Faces[2]),axis=0)
+        elif List_shape[0]==4:
+            Faces=np.concatenate((Faces[0],Faces[1],Faces[2],Faces[3]),axis=0)
+        else:
+            print("Pb, too much zones, modify code in main.py")
 
 plot(Faces,1,my_mesh)
 

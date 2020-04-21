@@ -209,11 +209,11 @@ def ZigZag(List,p):
     i1=i2=d1=d2=0
     m=np.zeros((1,1))
     print(Faces_all_y)
-    if Faces_all_y[0,2]>Faces_all_y[0,5]:
+    if (Faces_all_y[0,2]>Faces_all_y[0,5] and np.abs(Faces_all_y[0,1])>np.abs(Faces_all_y[0,4])) or (Faces_all_y[0,2]<Faces_all_y[0,5]and np.abs(Faces_all_y[0,1])<np.abs(Faces_all_y[0,4])):
         i1=-1
         d1=np.int(np.abs(Faces_all_y[0,2]-Faces_all_y[0,5]))
         m=np.append(m,np.array([[2]]),axis=0)
-    elif Faces_all_y[0,2]<Faces_all_y[0,5]:
+    elif Faces_all_y[0,2]<Faces_all_y[0,5] and np.abs(Faces_all_y[0,1])>np.abs(Faces_all_y[0,4]):
         i1=1
         d1=np.int(np.abs(Faces_all_y[0,2]-Faces_all_y[0,5]))
         m=np.append(m,np.array([[2]]),axis=0)
@@ -241,7 +241,6 @@ def ZigZag(List,p):
         if i==0:
             a1[i,:]=np.array([Faces_all_y[0,0],Faces_all_y[0,1]+i*(p*2),Faces_all_y[0,2],Faces_all_y[0,3],Faces_all_y[0,1]+p,Faces_all_y[0,5]+d1+(i1*d1)/ny,Faces_all_y[0,6],Faces_all_y[0,1]+p,Faces_all_y[0,8],Faces_all_y[0,9],Faces_all_y[0,10]+i*(p*2),Faces_all_y[0,11]+d2+(i2*d2)/ny])
             a2[i,:]=np.array([Faces_all_y[1,0],Faces_all_y[1,1]+p,Faces_all_y[1,2],Faces_all_y[1,3],Faces_all_y[1,1]+2*p,Faces_all_y[1,5]+d1+(i1*d1)/ny,Faces_all_y[1,6],Faces_all_y[1,1]+2*p,Faces_all_y[1,8],Faces_all_y[1,9],Faces_all_y[1,10]+p,Faces_all_y[1,11]+d2+(i2*d2)/ny])
-            #a2[i,:]=np.array([Faces_all_y[1,0],Faces_all_y[1,1]+p,Faces_all_y[1,2],Faces_all_y[1,3],Faces_all_y[1,1]+2*p,Faces_all_y[1,5]+d1+(i1*d1)/ny,Faces_all_y[1,6],Faces_all_y[1,1]+2*p,Faces_all_y[1,8],Faces_all_y[1,9],Faces_all_y[1,10]+p,Faces_all_y[1,11]+d2+(i2*d2)/ny])
         else:
             a1[i,:]= np.array([Faces_all_y[0,0],Faces_all_y[0,1]+i*(p*2),a1[i-1,2]+(i1*d1)/ny,Faces_all_y[0,3],a1[i-1,1]+3*p,a1[i-1,5]+(i1*d1)/ny,Faces_all_y[0,6],a1[i-1,1]+3*p,a1[i-1,8]+(i2*d2)/ny,Faces_all_y[0,9],Faces_all_y[0,10]+i*(p*2),a1[i-1,11]+(i2*d2)/ny])
             a2[i,:]=np.array([Faces_all_y[1,0],a2[i-1,1]+p*2,a2[i-1,2]+(i1*d1)/ny,Faces_all_y[1,3],a2[i-1,1]+3*p,a2[i-1,5]+(i1*d1)/ny,Faces_all_y[1,6],a2[i-1,1]+3*p,a2[i-1,8]+(i2*d2)/ny,Faces_all_y[1,9],a2[i-1,10]+p*2,a2[i-1,11]+(i2*d2)/ny])
