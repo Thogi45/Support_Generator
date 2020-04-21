@@ -213,7 +213,7 @@ def needed_support_Bridge_rule (normal, vertices):
             ab=np.append(ab,b,axis=0)
         else:
             pass
-    print(ab)
+
     ab_shape=np.shape(ab)
     for j in range (0, ab_shape[0]):
         for k in range (0, ab_shape[0]):
@@ -304,7 +304,7 @@ def needed_support_Bridge_rule (normal, vertices):
                         if (Contour[j][2][:2] == Contour[k][0][:2]).all() or (Contour[j][2][:2] == Contour[k][1][:2]).all() or (Contour[j][2][:2] == Contour[k][2][:2]).all() or (Contour[j][2][:2] == Contour[k][3][:2]).all():
                             if (Contour[j][3][:2] == Contour[k][0][:2]).all() or (Contour[j][3][:2] == Contour[k][1][:2]).all() or (Contour[j][3][:2] == Contour[k][2][:2]).all() or (Contour[j][3][:2] == Contour[k][3][:2]).all():
                                 if Contour[j][0][2] <= 1e-5 or Contour[k][0][2] <= 1e-5:
-                                    print(j,k)
+
                                     Required_support[j]=np.zeros((Shape_required_support[1],Shape_required_support[2]))
                                     Required_support[k]=np.zeros((Shape_required_support[1],Shape_required_support[2]))
                                 elif Contour[j][0][2] > Contour[k][0][2]:
