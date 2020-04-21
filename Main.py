@@ -2,7 +2,6 @@ import os,sys, glob
 import time
 from stl import mesh, Mesh
 import numpy as np
-import Locate_STL
 from Support_finder import support_45deg_rule
 from Support_finder import needed_support_Bridge_rule
 from Support_Generator import AreasWithSameAngle
@@ -23,7 +22,7 @@ print("----------------------------------------\n")
 print("You need to choose the STL file you want to generate supports with.")
 
 
-time.sleep(1)
+
 
 import Locate_STL
 my_mesh= mesh.Mesh.from_file(Locate_STL.STL1)
@@ -49,22 +48,55 @@ for i in range(len(liste_support)):
     ListeContour.append(FindContour(A))
 
 ListeProjete=Projection(ListeContour)
-print(ListeProjete)
+
+from Hello import ShapeChoice
+
+Choice=ShapeChoice()
 List_shape= np.shape(ListeProjete)
 Faces=[]
-for i in range (0,List_shape[1]):
-    Rec=gridxy(ListeProjete[:][i][:][:],1)
-    Faces.append(Rec)
-if List_shape[1]==1:
-    pass
-elif List_shape[1]==2:
-    Faces=np.concatenate((Faces[0],Faces[1]),axis=0)
-elif List_shape[1]==3:
-    Faces=np.concatenate((Faces[0],Faces[1],Faces[2]),axis=0)
-elif List_shape[1]==4:
-    Faces=np.concatenate((Faces[0],Faces[1],Faces[2],Faces[3]),axis=0)
-else:
-    print("Pb, too much zones, modify code in main.py")
+if Choice==2:
+    for i in range (0,List_shape[1]):
+        Rec=gridxy(ListeProjete[:][i][:][:],1)
+        Faces.append(Rec)
+    if List_shape[1]==1:
+        pass
+    elif List_shape[1]==2:
+        Faces=np.concatenate((Faces[0],Faces[1]),axis=0)
+    elif List_shape[1]==3:
+        Faces=np.concatenate((Faces[0],Faces[1],Faces[2]),axis=0)
+    elif List_shape[1]==4:
+        Faces=np.concatenate((Faces[0],Faces[1],Faces[2],Faces[3]),axis=0)
+    else:
+        print("Pb, too much zones, modify code in main.py")
+elif Choice==1:
+    for i in range (0,List_shape[1]):
+        Rec=Rectangular_simple_support(ListeProjete[:][i][:][:])
+        Faces.append(Rec)
+    if List_shape[1]==1:
+        pass
+    elif List_shape[1]==2:
+        Faces=np.concatenate((Faces[0],Faces[1]),axis=0)
+    elif List_shape[1]==3:
+        Faces=np.concatenate((Faces[0],Faces[1],Faces[2]),axis=0)
+    elif List_shape[1]==4:
+        Faces=np.concatenate((Faces[0],Faces[1],Faces[2],Faces[3]),axis=0)
+    else:
+        print("Pb, too much zones, modify code in main.py")
+elif Choice==3:
+    for i in range (0,List_shape[1]):
+        Rec=ZigZag(ListeProjete[:][i][:][:],1)
+        Faces.append(Rec)
+    if List_shape[1]==1:
+        pass
+    elif List_shape[1]==2:
+        Faces=np.concatenate((Faces[0],Faces[1]),axis=0)
+    elif List_shape[1]==3:
+        Faces=np.concatenate((Faces[0],Faces[1],Faces[2]),axis=0)
+    elif List_shape[1]==4:
+        Faces=np.concatenate((Faces[0],Faces[1],Faces[2],Faces[3]),axis=0)
+    else:
+        print("Pb, too much zones, modify code in main.py")
+
 plot(Faces,1,my_mesh)
 
 
