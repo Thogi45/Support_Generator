@@ -136,12 +136,12 @@ def line_support(axes,List,p):
         #if Faces[0,0]!= Faces[0,3] or Faces[0,0]!= Faces[0,6] or Faces[0,0]!= Faces[0,9]:
         if axes == 'x':
             nx=np.int(np.abs(Faces[0,1]-Faces[1,4])*(1/p))-1
-            print(Faces)
+
             l=2
             while nx == -1:
                 nx=np.int(np.abs(Faces[0,0]-Faces[1,3*l+1])*(1/p))-1
                 l+=1
-            print(nx)
+
             a=np.zeros((nx,12))
             if Faces[0,1]>Faces[1,1]:
                 for i in range(1, nx+1):
@@ -154,7 +154,7 @@ def line_support(axes,List,p):
         #elif Faces[0,1]!= Faces[0,4] or Faces[0,1]!= Faces[0,7] or Faces[0,1]!= Faces[0,10]:
         elif axes == 'y':
             ny=np.int(np.abs(Faces[0,0]-Faces[1,3])*(1/p))-1
-            print(ny)
+
             l=2
             while ny == -1:
                 ny=np.int(np.abs(Faces[0,1]-Faces[1,3*l])*(1/p))-1
@@ -208,7 +208,7 @@ def ZigZag(List,p):
     Faces_all_y=extremity_creation('y',List)
     i1=i2=d1=d2=0
     m=np.zeros((1,1))
-    print(Faces_all_y)
+
     if (Faces_all_y[0,2]>Faces_all_y[0,5] and np.abs(Faces_all_y[0,1])>np.abs(Faces_all_y[0,4])) or (Faces_all_y[0,2]<Faces_all_y[0,5]and np.abs(Faces_all_y[0,1])<np.abs(Faces_all_y[0,4])):
         i1=-1
         d1=np.int(np.abs(Faces_all_y[0,2]-Faces_all_y[0,5]))
@@ -230,7 +230,7 @@ def ZigZag(List,p):
     else:
         i2=0
     ny=np.int(np.abs(Faces_all_y[0,1]-Faces_all_y[0,4])*(1/(p*2)))
-    print(ny)
+
     a1=np.zeros((ny,12))
     a2=np.zeros((ny,12))
     if Faces_all_y[0,1]>Faces_all_y[0,4]:
@@ -244,8 +244,7 @@ def ZigZag(List,p):
         else:
             a1[i,:]= np.array([Faces_all_y[0,0],Faces_all_y[0,1]+i*(p*2),a1[i-1,2]+(i1*d1)/ny,Faces_all_y[0,3],a1[i-1,1]+3*p,a1[i-1,5]+(i1*d1)/ny,Faces_all_y[0,6],a1[i-1,1]+3*p,a1[i-1,8]+(i2*d2)/ny,Faces_all_y[0,9],Faces_all_y[0,10]+i*(p*2),a1[i-1,11]+(i2*d2)/ny])
             a2[i,:]=np.array([Faces_all_y[1,0],a2[i-1,1]+p*2,a2[i-1,2]+(i1*d1)/ny,Faces_all_y[1,3],a2[i-1,1]+3*p,a2[i-1,5]+(i1*d1)/ny,Faces_all_y[1,6],a2[i-1,1]+3*p,a2[i-1,8]+(i2*d2)/ny,Faces_all_y[1,9],a2[i-1,10]+p*2,a2[i-1,11]+(i2*d2)/ny])
-    print("a1",a1)
-    print("a2",a2)
+
     a= np.concatenate((a1,a2),axis=0)
     Faces=np.concatenate((Facesx,a),axis=0)
     return Faces

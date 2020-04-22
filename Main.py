@@ -53,9 +53,7 @@ if len(ListeProjete)==0:
     print("you do not need any support")
 else:
     Choice=ShapeChoice()
-    print(ListeProjete[:][0][:][:])
     List_shape= np.shape(ListeProjete)
-    print(List_shape)
     Faces=[]
     if Choice==1:
         for i in range (0,List_shape[0]):
