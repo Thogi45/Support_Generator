@@ -3,22 +3,63 @@ from matplotlib import pyplot as plt
 from mpl_toolkits import mplot3d
 from mpl_toolkits.mplot3d import Axes3D
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
+from matplotlib.pyplot import autoscale
 import numpy as np
 import Support_Generator
 
 '''ListFinal=[]
 ListConT=[]
-#toto=np.array([[5,5,2,0,5,2], [0,5,2,0,0,2],[0,0,1,5,0,1],[5,0,1,5,5,1]])
-toto=np.array([[5,20,35,0,20,35], [0,20,35,0,2.5,20],[0,2.5,20,5,2.5,20],[5,2.5,20,5,20,35]])
+toto=np.array([[9.1868,-20.6148,-13.4778,8,-19,-13], [8.4814,-19.81534,-13.7927,8,-19,-13],[8.7838,-19.3612,-13.5831,9,-20,-13]])
+#toto=np.array([[5,20,35,0,20,35], [0,20,35,0,2.5,20],[0,2.5,20,5,2.5,20],[5,2.5,20,5,20,35]])
 ListConT.append(toto)
 ListFinal.append(ListConT)
 ListProj=[]
 #toto2=np.array([[5,5,0,0,5,0], [0,5,0,0,0,0],[0,0,0,5,0,0],[5,0,0,5,5,0]])
-toto2=np.array([[5,20,0,0,20,0], [0,20,0,0,-2.5,0],[0,2.5,0,5,2.5,0],[5,2.5,0,5,20,0]])
+toto2=np.array([[9.1868,-20.6148,0,8,-19,0], [8.4814,-19.81534,0,8,-19,0],[8.7838,-19.3612,0,9,-20,0]])
 ListProj.append(toto2)
 ListFinal.append(ListProj)
 
 Shape_listfinal=np.shape(ListFinal)'''
+
+def extremity_creation_triangle(axe,List):
+    '''
+        determined 2 faces exterimities of the support along x or y axis
+    '''
+    Shape_listfinal=np.shape(List)
+    if axe=='xy':
+        Faces=np.zeros((3,12))
+        for j in range (0,3):
+            for i in range(0,2):
+                if j==0 or j==1:
+                    #First line is the face 1254 (j=0) and 2nd face is the face 2365 (j=1)
+                    Faces[j,3*i]= List[0][i+j][0]
+                    Faces[j,3*i+1]= List[0][i+j][1]
+                    Faces[j,3*i+2]= List[0][i+j][2]
+                    Faces[j,6+3*i]= List[1][1-i+j][0]
+                    Faces[j,6+3*i+1]= List[1][1-i+j][1]
+                    Faces[j,6+3*i+2]= List[1][1-i+j][2]
+                else:
+                    Faces[j,3*i]= List[0][i*2][0]
+                    Faces[j,3*i+1]= List[0][i*2][1]
+                    Faces[j,3*i+2]= List[0][i*2][2]
+                    Faces[j,6+3*i]= List[1][2-2*i][0]
+                    Faces[j,6+3*i+1]= List[1][2-2*i][1]
+                    Faces[j,6+3*i+2]= List[1][2-2*i][2]
+    elif axe=='z':
+        Faces=np.zeros((2,12))
+        for j in range (0,2):
+            for i in range(0,2):
+                #First is the face 1231 and 2nd face 4564
+                Faces[j,3*i]= List[j][i][0]
+                Faces[j,3*i+1]= List[j][i][1]
+                Faces[j,3*i+2]= List[j][i][2]
+                Faces[j,6+3*i]= List[j][2-2*i][0]
+                Faces[j,6+3*i+1]= List[j][2-2*i][1]
+                Faces[j,6+3*i+2]= List[j][2-2*i][2]
+    else:
+        return "axe is not well define"
+            # we need to cross the upper points to have a face (Face is point [1265] and not [1256]), that's why we have 1-i in the indices of ListFinal
+    return Faces
 
 def extremity_creation(axe,List):
     '''
@@ -66,6 +107,12 @@ def extremity_creation(axe,List):
     else:
         return "axe is not well define"
             # we need to cross the upper points to have a face (Face is point [1265] and not [1256]), that's why we have 1-i in the indices of ListFinal
+    return Faces
+
+def thetraedral_simple_support(List):
+    Facesxy=extremity_creation_triangle('xy',List)
+    Facesz=extremity_creation_triangle('z',List)
+    Faces= np.concatenate((Facesxy,Facesz),axis=0)
     return Faces
 
 def Rectangular_simple_support(List):
@@ -132,16 +179,12 @@ def line_support(axes,List,p):
             b=m[2,0]
             if Faces[0,np.int(a)]!=Faces[0,np.int(b)]:
                 i1=i2=i3=i4=0
-
-        #if Faces[0,0]!= Faces[0,3] or Faces[0,0]!= Faces[0,6] or Faces[0,0]!= Faces[0,9]:
         if axes == 'x':
             nx=np.int(np.abs(Faces[0,1]-Faces[1,4])*(1/p))-1
-            print(Faces)
             l=2
             while nx == -1:
                 nx=np.int(np.abs(Faces[0,0]-Faces[1,3*l+1])*(1/p))-1
                 l+=1
-            print(nx)
             a=np.zeros((nx,12))
             if Faces[0,1]>Faces[1,1]:
                 for i in range(1, nx+1):
@@ -154,7 +197,6 @@ def line_support(axes,List,p):
         #elif Faces[0,1]!= Faces[0,4] or Faces[0,1]!= Faces[0,7] or Faces[0,1]!= Faces[0,10]:
         elif axes == 'y':
             ny=np.int(np.abs(Faces[0,0]-Faces[1,3])*(1/p))-1
-            print(ny)
             l=2
             while ny == -1:
                 ny=np.int(np.abs(Faces[0,1]-Faces[1,3*l])*(1/p))-1
@@ -208,7 +250,6 @@ def ZigZag(List,p):
     Faces_all_y=extremity_creation('y',List)
     i1=i2=d1=d2=0
     m=np.zeros((1,1))
-    print(Faces_all_y)
     if (Faces_all_y[0,2]>Faces_all_y[0,5] and np.abs(Faces_all_y[0,1])>np.abs(Faces_all_y[0,4])) or (Faces_all_y[0,2]<Faces_all_y[0,5]and np.abs(Faces_all_y[0,1])<np.abs(Faces_all_y[0,4])):
         i1=-1
         d1=np.int(np.abs(Faces_all_y[0,2]-Faces_all_y[0,5]))
@@ -230,7 +271,6 @@ def ZigZag(List,p):
     else:
         i2=0
     ny=np.int(np.abs(Faces_all_y[0,1]-Faces_all_y[0,4])*(1/(p*2)))
-    print(ny)
     a1=np.zeros((ny,12))
     a2=np.zeros((ny,12))
     if Faces_all_y[0,1]>Faces_all_y[0,4]:
@@ -244,31 +284,44 @@ def ZigZag(List,p):
         else:
             a1[i,:]= np.array([Faces_all_y[0,0],Faces_all_y[0,1]+i*(p*2),a1[i-1,2]+(i1*d1)/ny,Faces_all_y[0,3],a1[i-1,1]+3*p,a1[i-1,5]+(i1*d1)/ny,Faces_all_y[0,6],a1[i-1,1]+3*p,a1[i-1,8]+(i2*d2)/ny,Faces_all_y[0,9],Faces_all_y[0,10]+i*(p*2),a1[i-1,11]+(i2*d2)/ny])
             a2[i,:]=np.array([Faces_all_y[1,0],a2[i-1,1]+p*2,a2[i-1,2]+(i1*d1)/ny,Faces_all_y[1,3],a2[i-1,1]+3*p,a2[i-1,5]+(i1*d1)/ny,Faces_all_y[1,6],a2[i-1,1]+3*p,a2[i-1,8]+(i2*d2)/ny,Faces_all_y[1,9],a2[i-1,10]+p*2,a2[i-1,11]+(i2*d2)/ny])
-    print("a1",a1)
-    print("a2",a2)
     a= np.concatenate((a1,a2),axis=0)
     Faces=np.concatenate((Facesx,a),axis=0)
     return Faces
 
 
-def plot(FacesMatrix,figure,my_mesh):
+def plot(FacesMatrix,my_mesh,xy_limmin,xy_limmax,z_limmin,z_limmax):
     FacesMatrix_shape=FacesMatrix.shape
-    figure2 = plt.figure(figure)
+    figure2 = plt.figure()
     ax2 = figure2.add_subplot(111, projection='3d')
     verts=[[FacesMatrix[i,j*3:j*3+3] for j in range(4)] for i in range(FacesMatrix_shape[0])]
-    ax2.add_collection3d(Poly3DCollection(verts, alpha=0.25, facecolors='#800000'))
-    ax2.add_collection3d(mplot3d.art3d.Poly3DCollection(my_mesh.vectors))
+    ax2.add_collection3d(Poly3DCollection(verts, alpha=0.25, facecolors='#800000', edgecolors='brown'))
+    ax2.add_collection3d(mplot3d.art3d.Poly3DCollection(my_mesh.vectors, edgecolors='navy'))
+    ax2.set_xlabel('X')
+    ax2.set_ylabel('Y')
+    ax2.set_zlabel('Z')
+    ax2.set_xlim(xy_limmin,xy_limmax)
+    ax2.set_ylim(xy_limmin,xy_limmax)
+    ax2.set_zlim(z_limmin,z_limmax)
+    plt.show()
+    return
+
+def plot_mesh(my_mesh):
+    figure2 = plt.figure()
+    ax2 = figure2.add_subplot(111, projection='3d')
+    ax2.add_collection3d(mplot3d.art3d.Poly3DCollection(my_mesh.vectors, edgecolors='navy'))
     ax2.set_xlabel('X')
     ax2.set_ylabel('Y')
     ax2.set_zlabel('Z')
     ax2.set_xlim(-30,30)
     ax2.set_ylim(-30,30)
-    ax2.set_zlim(0,30)
+    ax2.set_zlim(0,60)
     plt.show()
     return
 
 
-'''Rec=Rectangular_simple_support(ListFinal)
+'''exx=thetraedral_simple_support(ListFinal)
+plot(exx,1)
+Rec=Rectangular_simple_support(ListFinal)
 Linex=line_support('x',ListFinal,1)
 Liney=line_support('y',ListFinal,1)
 Linez=line_support('z',ListFinal,0.1)
