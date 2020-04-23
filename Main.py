@@ -21,7 +21,7 @@ from Support_Shape import gridxy
 from Support_Shape import ZigZag
 from Support_Shape import plot
 from Support_Shape import plot_mesh
-from Hello import ShapeChoice
+from Locate_STL import ShapeChoice
 
 
 
