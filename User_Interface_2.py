@@ -165,7 +165,6 @@ class Interface(Frame):
             if self.OK[ij]== True:
                 i = i+1
         if i == 5:
-            del self.graph
             self.STL = self.message1["text"]
             self.angle = self.angle_verif.get()
             self.bridge = self.length_verif.get()
