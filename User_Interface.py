@@ -41,7 +41,7 @@ class Interface(Frame):
         self.canvasA.grid(row=0,column=0,columnspan=7)
         # Création de nos widgets
 
-        self.message = Label(self,justify=LEFT, text="  Choose a STL file",background='light steel blue')
+        self.message = Label(self,justify=LEFT, text="   Choose a STL file",background='light steel blue')
         self.message.grid(column=0,row=1,pady=0,rowspan=2,sticky=W)
         self.message1 = Label(self, text="",bg='white',width=10)
         self.message1.grid(column=1,row=1,pady=5,columnspan=3,rowspan=2)
@@ -153,11 +153,12 @@ class Interface(Frame):
         for ij in range(len(self.OK)):
             if self.OK[ij]== True:
                 i = i+1
-        if i ==4:
+        if i == 4:
             self.STL = self.message1["text"]
             self.angle = self.angle_verif.get()
             self.bridge = self.length_verif.get()
             self.shape = self.var_choix.get()
+
     def View(self):
         if self.bouton_OK["fg"] == 'green':
             reader = tvtk.STLReader()
