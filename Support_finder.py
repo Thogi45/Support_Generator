@@ -6,7 +6,7 @@ from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 import numpy as np
 import math
 
-def needed_support_Bridge_rule (normal, vertices):
+def needed_support_Bridge_rule (normal, vertices, critical_length):
     '''
     5 mm rule for bridges
     If a bridge is more than 5 mm in length, it requires 3D printing support structure
@@ -128,7 +128,7 @@ def needed_support_Bridge_rule (normal, vertices):
                                 for l in range (0, Shape_contour[1]):
                                     for p in range (0, Shape_contour[1]):
                                         if Contour[j][0][0]!=Contour[j][l][0] and Contour[j][0][1]!=Contour[j][p][1]:
-                                            if abs(Contour[j][0][0]-Contour[j][l][0])<=5 and abs(Contour[j][0][1]-Contour[j][p][1])<=5:
+                                            if abs(Contour[j][0][0]-Contour[j][l][0])<=critical_length and abs(Contour[j][0][1]-Contour[j][p][1])<=critical_length:
                                                 Required_support[j]=np.zeros((Shape_required_support[1],Shape_required_support[2]))
                                             else:
                                                 n+=1
@@ -143,7 +143,7 @@ def needed_support_Bridge_rule (normal, vertices):
 
     return Required_support
 
-def support_45deg_rule (normal, vertices):
+def support_45deg_rule (normal, vertices, critical_angle):
     '''
     45° rule for overhangs
     If an overhang tilts at an angle less than 45 degress from the vertical it requires 3D printing support structures.
@@ -169,7 +169,7 @@ def support_45deg_rule (normal, vertices):
         Unit_vector_normals[i,:]= normal[i,:]/np.linalg.norm(normal[i,:])
         dot_product[i,:]=np.dot(Unit_vector_normals[i,:],Vector_reference)
         angle[i,:]= np.arccos(dot_product[i,:])
-        if np.abs(angle[i,:]) >= 2.35619 and np.abs(angle[i,:]) <= 3.92699 and np.abs(angle[i,:]) != np.pi:
+        if np.abs(angle[i,:]) >= np.pi/2 + (critical_angle*np.pi/180) and np.pi + (critical_angle*np.pi/180) and np.abs(angle[i,:]) != np.pi:
             b= np.array([vertices[i,:]])
             a=np.append(a,b,axis=0)
             t+=1
