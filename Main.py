@@ -1,10 +1,10 @@
 import os,sys, glob
 import time
-from stl import mesh, Mesh
+from stl import mesh
 import numpy as np
 from Support_finder import support_45deg_rule
 from Support_finder import needed_support_Bridge_rule
-from Support_Generator import ModifForContour
+from Support_Generator import AreasWithSameAngle
 from Support_Generator import FindContour
 from Support_Generator import Projection
 from Support_Shape import line_support
@@ -45,7 +45,7 @@ liste_support=[]
 liste_support=support_bridge+support_angle
 ListeContour=[]
 for i in range(len(liste_support)):
-    A=ModifForContour(liste_support[i])
+    A=AreasWithSameAngle(liste_support[i])
     ListeContour.append(FindContour(A))
 ListeProjete=Projection(ListeContour)
 

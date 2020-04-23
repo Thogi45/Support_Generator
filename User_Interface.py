@@ -1,4 +1,5 @@
-
+import PyQt5
+import PyQt5.QtWidgets
 from tkinter import *
 from tkinter import filedialog
 from matplotlib import pyplot as plt
@@ -8,8 +9,12 @@ from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import numpy as np
 import Support_Generator
-from stl import mesh, Mesh
-import os,sys
+import mayavi
+import vtk
+from tvtk.api import tvtk
+from mayavi import mlab
+
+
 
 class Interface(Frame):
 
@@ -17,7 +22,7 @@ class Interface(Frame):
     Tous les widgets sont stockés comme attributs de cette fenêtre."""
 
     def __init__(self, fenetre, **kwargs):
-        Frame.__init__(self, fenetre, bg= 'navy', **kwargs)
+        Frame.__init__(self, fenetre, **kwargs)
 
         self.pack()
         self.STL = ""
@@ -29,15 +34,15 @@ class Interface(Frame):
         self.message3.config(width=len(self.message3["text"]))
         self.message3.grid(column=0,row=3,pady=5)
         self.message = Label(self,justify=LEFT, text="Choose a STL file",anchor=W,width=len(self.message3["text"]))
-        self.message.grid(column=0,row=1,pady=5)
+        self.message.grid(column=0,row=0,pady=5,rowspan=2)
         self.message1 = Label(self, text="",bg='white',width=10)
-        self.message1.grid(column=1,row=1,pady=5,columnspan=3)
+        self.message1.grid(column=1,row=0,pady=5,columnspan=3,rowspan=2)
         self.bouton_OK = Button(self, text="Validate", command=self.disp)
-        self.bouton_OK.grid(column=6,row=1,pady=5)
+        self.bouton_OK.grid(column=5,row=1,pady=5,padx=5)
         self.bouton_Plot = Button(self, text="View", command=self.View)
-        self.bouton_Plot.grid(column=7,row=1,pady=5)
+        self.bouton_Plot.grid(column=6,row=0,pady=5,padx=5,rowspan=2)
         self.bouton_Browse = Button(self, text="Browse",command=self.click)
-        self.bouton_Browse.grid(column=5,row=1,pady=5)
+        self.bouton_Browse.grid(column=5,row=0,pady=5,padx=5)
         self.message4=Label(self,text="Choose the Overhang Angle (must be between 40 to 50)",anchor=W, width=len(self.message3["text"]))
         self.message4.grid(column=0,row=2,pady=5)
         self.angle_texte = Entry(self,textvariable = self.angle_verif)
@@ -79,6 +84,16 @@ class Interface(Frame):
         self.canvas3.create_line(2,5,29,5,fill="black")
         self.canvas3.create_line(2,25,29,25,fill="black")
         self.canvas3.grid(row=4,column=3,padx=2)
+        self.var_choix = StringVar()
+
+        self.choix_1 = Radiobutton(self, text="", variable=self.var_choix, value=1)
+        self.choix_2 = Radiobutton(self, text="", variable=self.var_choix, value=2)
+        self.choix_3= Radiobutton(self, text="", variable=self.var_choix, value=3)
+        self.choix_1.grid(row=5,column=1)
+        self.choix_2.grid(row=5,column=2)
+        self.choix_3.grid(row=5,column=3)
+        self.bouton_OK4 = Button(self, text="Validate", command=self.disp4)
+        self.bouton_OK4.grid(column=5,row=4,columnspan=2,rowspan=2,pady=5)
 
     def click(self):
         """Il y a eu un clic sur le bouton.
@@ -111,9 +126,28 @@ class Interface(Frame):
                 self.bouton_OK3['fg']="red"
          except:#Mais si l'utilisateur à rentrer autre chose que un entier alors on lui affiche "Veuillez entrer un nombre" et la boucle recommence.
             self.bouton_OK3['fg']="red"
+    def disp4(self):
+        try:
+            nbr=self.var_choix.get()
+
+            self.bouton_OK4['fg'] = "green"
+            if nbr=="":
+                self.bouton_OK4['fg'] = "red"
+        except:
+            self.bouton_OK4['fg'] = "red"
     def View(self):
         if self.bouton_OK["fg"] == 'green':
-            my_mesh= mesh.Mesh.from_file(self.STL)
+
+            reader = tvtk.STLReader()
+            reader.file_name = self.STL
+            reader.update()
+            surf = reader.output
+            mlab.pipeline.surface(surf)
+            mlab.show()
+            k=0
+
+
+            """""""""
             figure2 = plt.figure()
             axes = mplot3d.Axes3D(figure2)
             axes.add_collection3d(mplot3d.art3d.Poly3DCollection(my_mesh.vectors))
@@ -126,6 +160,7 @@ class Interface(Frame):
             self.canvas4 = self.graph.get_tk_widget()
             self.canvas4.config(relief=GROOVE,borderwidth=5)
             self.canvas4.grid(column=8,row=1,rowspan=12,padx=10)
+            """""
         else:
             self.bouton_OK["fg"] = 'red'
 

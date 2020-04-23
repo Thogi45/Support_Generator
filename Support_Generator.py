@@ -91,19 +91,6 @@ def AreasWithSameAngle(vertices):
         a=a+compteur+1
     return Zones
 
-def ModifForContour(vertices):
-    a=0
-    plan=vertices
-    Zones=[]
-    while a < len(vertices):
-        PetitZone=[]
-        ref=plan[0,0:9]
-        plan=np.delete(plan,0,axis=0)
-        PetitZone.append(ref)
-        Zones.append(PetitZone)
-        a=a+1
-    return Zones
-
 def FindContour(Zones):
     ListeContour=[]
     ij=-1
