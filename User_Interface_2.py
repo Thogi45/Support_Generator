@@ -164,7 +164,7 @@ class Interface(Frame):
             my_mesh = mesh.Mesh.from_file(self.STL)
             figure2 = plt.figure()
             axes = mplot3d.Axes3D(figure2)
-            axes.add_collection3d(mplot3d.art3d.Poly3DCollection(my_mesh.vectors))
+            axes.add_collection3d(mplot3d.art3d.Poly3DCollection(my_mesh.vectors, edgecolors='navy'))
             axes.set_xlabel('X')
             axes.set_ylabel('Y')
             axes.set_zlabel('Z')
