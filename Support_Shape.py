@@ -7,20 +7,6 @@ from matplotlib.pyplot import autoscale
 import numpy as np
 import Support_Generator
 
-'''ListFinal=[]
-ListConT=[]
-toto=np.array([[9.1868,-20.6148,-13.4778,8,-19,-13], [8.4814,-19.81534,-13.7927,8,-19,-13],[8.7838,-19.3612,-13.5831,9,-20,-13]])
-#toto=np.array([[5,20,35,0,20,35], [0,20,35,0,2.5,20],[0,2.5,20,5,2.5,20],[5,2.5,20,5,20,35]])
-ListConT.append(toto)
-ListFinal.append(ListConT)
-ListProj=[]
-#toto2=np.array([[5,5,0,0,5,0], [0,5,0,0,0,0],[0,0,0,5,0,0],[5,0,0,5,5,0]])
-toto2=np.array([[9.1868,-20.6148,0,8,-19,0], [8.4814,-19.81534,0,8,-19,0],[8.7838,-19.3612,0,9,-20,0]])
-ListProj.append(toto2)
-ListFinal.append(ListProj)
-
-Shape_listfinal=np.shape(ListFinal)'''
-
 def extremity_creation_triangle(axe,List):
     '''
         determined 2 faces exterimities of the support along x or y axis
@@ -243,6 +229,9 @@ def grid3D(List,p):
     return Faces
 
 def ZigZag(List,p):
+    '''
+        Creation of the ZigZag shape
+    '''
     Facesx=line_support('x',List,p)
     Facesx= np.delete(Facesx,0,0)
     Facesx_shape=Facesx.shape
@@ -317,31 +306,3 @@ def plot_mesh(my_mesh):
     ax2.set_zlim(0,60)
     plt.show()
     return
-
-
-'''exx=thetraedral_simple_support(ListFinal)
-plot(exx,1)
-Rec=Rectangular_simple_support(ListFinal)
-Linex=line_support('x',ListFinal,1)
-Liney=line_support('y',ListFinal,1)
-Linez=line_support('z',ListFinal,0.1)
-grid=grid3D(ListFinal,1)
-ZZ = ZigZag(ListFinal,1)
-exx=extremity_creation('y',ListFinal)
-print(exx)
-plot(ZZ,1)
-#hape_line=Line.shape
-#shape_grid=grid.shape'''
-
-'''
-figure2 = plt.figure(2)
-ax2 = figure2.add_subplot(111, projection='3d')
-verts=[[Rec[i,j*3:j*3+3] for j in range(4)] for i in range(Rec_shape[0])]
-ax2.add_collection3d(Poly3DCollection(verts, alpha=0.25, facecolors='#800000'))
-ax2.set_xlabel('X')
-ax2.set_ylabel('Y')
-ax2.set_zlabel('Z')
-ax2.set_xlim(0,5)
-ax2.set_ylim(0,5)
-ax2.set_zlim(0,5)
-plt.show()'''

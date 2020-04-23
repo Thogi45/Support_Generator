@@ -18,8 +18,8 @@ from stl import mesh
 
 class Interface(Frame):
 
-    """Notre fenêtre principale.
-    Tous les widgets sont stockés comme attributs de cette fenêtre."""
+    """Our principal windows
+    All the widgets are stored as attributes in this window."""
 
     def __init__(self, fenetre, **kwargs):
         Frame.__init__(self, fenetre, **kwargs)
@@ -131,8 +131,8 @@ class Interface(Frame):
                 self.angle = nbr
             else:
                 self.bouton_OK2['fg']="red"
-         except:#Mais si l'utilisateur à rentrer autre chose que un entier alors on lui affiche "Veuillez entrer un nombre" et la boucle recommence.
-            self.bouton_OK2['fg']="red"
+         except:# If the user write something different than an integer we display "Please enter a number" and the loop start again.
+             self.bouton_OK2['fg']="red"
     def disp3(self):
          try:
             nbr=self.length_verif.get()
@@ -141,7 +141,7 @@ class Interface(Frame):
                 self.OK[2] = True
             else:
                 self.bouton_OK3['fg']="red"
-         except:#Mais si l'utilisateur à rentrer autre chose que un entier alors on lui affiche "Veuillez entrer un nombre" et la boucle recommence.
+         except:# If the user write something different than an integer we display "Please enter a number" and the loop start again.
             self.bouton_OK3['fg']="red"
 
     def disp4(self):
@@ -237,20 +237,6 @@ class Interface(Frame):
             mlab.pipeline.surface(surf)
             mlab.show()
             k=0
-            """""""""
-            figure2 = plt.figure()
-            axes = mplot3d.Axes3D(figure2)
-            axes.add_collection3d(mplot3d.art3d.Poly3DCollection(my_mesh.vectors))
-            axes.set_xlabel('X')
-            axes.set_ylabel('Y')
-            axes.set_zlabel('Z')
-            scale = my_mesh.points.flatten('A')
-            axes.auto_scale_xyz(scale, scale, scale)
-            self.graph = FigureCanvasTkAgg(figure2,self)
-            self.canvas4 = self.graph.get_tk_widget()
-            self.canvas4.config(relief=GROOVE,borderwidth=5)
-            self.canvas4.grid(column=8,row=1,rowspan=12,padx=10)
-            """""
         else:
             self.bouton_OK["fg"] = 'red'
 
@@ -260,13 +246,4 @@ fenetre = Tk()
 fenetre.title('Support Generator')
 interface = Interface(fenetre)
 
-interface.mainloop()
-carot=interface.STL
-print(carot)
-carot = interface.angle
-print(carot)
-carot = interface.bridge
-print(carot)
-carot = interface.shape
-print(carot)
 
