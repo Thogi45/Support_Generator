@@ -13,7 +13,7 @@ import mayavi
 import vtk
 from tvtk.api import tvtk
 from mayavi import mlab
-
+from stl import mesh
 
 
 class Interface(Frame):
@@ -26,12 +26,14 @@ class Interface(Frame):
         self.config(background='light steel blue')
         self.pack()
         self.STL = ""
-        self.OK = [False, False, False, False]
+        self.OK = [False, False, False, False,False]
         self.angle_verif = DoubleVar()
         self.length_verif = DoubleVar()
+        self.PA = DoubleVar()
         self.angle=0.0
         self.bridge=0.0
         self.shape = 0
+        self.pathN = 0.0
         self.message3=Label(self,text="  Choose the Length for the Bridge Rule\n\n(must be between 4.5 to 5.5)",background='light steel blue')
 
         self.message3.grid(column=0,row=4,pady=5,sticky=W)
@@ -41,7 +43,7 @@ class Interface(Frame):
         self.canvasA.grid(row=0,column=0,columnspan=7)
         # Création de nos widgets
 
-        self.message = Label(self,justify=LEFT, text="  Choose a STL file",background='light steel blue')
+        self.message = Label(self,justify=LEFT, text="   Choose a STL file",background='light steel blue')
         self.message.grid(column=0,row=1,pady=0,rowspan=2,sticky=W)
         self.message1 = Label(self, text="",bg='white',width=10)
         self.message1.grid(column=1,row=1,pady=5,columnspan=3,rowspan=2)
@@ -93,7 +95,6 @@ class Interface(Frame):
         self.canvas3.create_line(2,25,29,25,fill="black")
         self.canvas3.grid(row=5,column=3,padx=2)
         self.var_choix = StringVar()
-
         self.choix_1 = Radiobutton(self, text="", variable=self.var_choix, value=1,background='light steel blue')
         self.choix_2 = Radiobutton(self, text="", variable=self.var_choix, value=2,background='light steel blue')
         self.choix_3= Radiobutton(self, text="", variable=self.var_choix, value=3,background='light steel blue')
@@ -102,11 +103,15 @@ class Interface(Frame):
         self.choix_3.grid(row=6,column=3)
         self.bouton_OK4 = Button(self, text="Validate", command=self.disp4)
         self.bouton_OK4.grid(column=5,row=5,columnspan=2,rowspan=2,pady=5)
+        self.path = Label(self,justify=LEFT, text="  Choose your path",background='light steel blue')
+        self.path.grid(column=0,row=8,pady=5,sticky=W)
+        self.path1 = Entry(self,textvariable = self.PA)
+        self.path1.grid(column=1,row=8,pady=5,columnspan=3)
+        self.bouton_OK5 = Button(self, text="Validate", command=self.disp5)
+        self.bouton_OK5.grid(column=5,row=8,columnspan=2,pady=5)
         self.bouton_Generate = Button(self, text='Generate',command=self.generate)
-        self.bouton_Generate.grid(column=2,row=7,columnspan=3,pady=5)
+        self.bouton_Generate.grid(column=2,row=9,columnspan=3,pady=5)
     def click(self):
-        """Il y a eu un clic sur le bouton.
-        On change la valeur du label message."""
         self.message1["text"]=filedialog.askopenfilename(title="Choose a STL file",filetypes=[("STL","*.stl")])
         self.message1["width"]=len(self.message1["text"])
     def disp(self):
@@ -148,16 +153,93 @@ class Interface(Frame):
                 self.bouton_OK4['fg'] = "red"
         except:
             self.bouton_OK4['fg'] = "red"
+    def disp5(self):
+        try:
+            nbr=float(self.PA.get())
+            self.bouton_OK5['fg'] = "green"
+            self.OK[4]=True
+            self.pathN = nbr
+            if nbr=="":
+                self.bouton_OK5['fg'] = "red"
+        except:
+            self.bouton_OK5['fg'] = "red"
     def generate(self):
         i = 0
         for ij in range(len(self.OK)):
             if self.OK[ij]== True:
                 i = i+1
-        if i ==4:
+        if i == 5:
             self.STL = self.message1["text"]
             self.angle = self.angle_verif.get()
             self.bridge = self.length_verif.get()
-            self.shape = self.var_choix.get()
+            self.shape = int(self.var_choix.get())
+            my_mesh= mesh.Mesh.from_file(self.STL)
+            normal=my_mesh.normals
+            vertices=my_mesh.points
+            from Support_finder import support_45deg_rule
+            from Support_finder import needed_support_Bridge_rule
+            support_angle=support_45deg_rule(normal,vertices,self.angle)
+            support_bridge=needed_support_Bridge_rule(normal,vertices,self.bridge)
+            i=0
+            p=len(support_bridge)
+            k=0
+            while i<p:
+                if all(support_bridge[k][0,0:9]== 0):
+                    del support_bridge[k]
+                else:
+                    k=k+1
+                p=p-1
+            liste_support=[]
+            liste_support=support_bridge+support_angle
+            ListeContour=[]
+            from Support_Generator import AreasWithSameAngle, FindContour, Projection
+            from Support_Shape import thetraedral_simple_support, Rectangular_simple_support, gridxy, ZigZag, plot
+            for i in range(len(liste_support)):
+                A=AreasWithSameAngle(liste_support[i])
+                ListeContour.append(FindContour(A))
+            ListeProjete=Projection(ListeContour)
+            ListeProjete_shape=np.shape(ListeProjete)
+            if len(ListeProjete)==0:
+                print("you do not need any support")
+            else:
+                n=0
+                if ListeProjete_shape[2]==3:
+                    Init = thetraedral_simple_support(ListeProjete[:][0][:][:])
+                    Init_shape=np.shape(Init)
+                    Faces=np.zeros((Init_shape[0]*ListeProjete_shape[0],12))
+                    while n <ListeProjete_shape[0]:
+                        The=thetraedral_simple_support(ListeProjete[:][n][:][:])
+                        Faces[Init_shape[0]*n:Init_shape[0]*n+Init_shape[0],:]=The
+                        n+=1
+                    plot(Faces,my_mesh,-50,50,0,80)
+                else:
+                    if self.shape==1:
+                        Init = Rectangular_simple_support(ListeProjete[:][0][:][:])
+                        Init_shape=np.shape(Init)
+                        Faces=np.zeros((Init_shape[0]*ListeProjete_shape[0],12))
+                        while n <ListeProjete_shape[0]:
+                            Rec=Rectangular_simple_support(ListeProjete[:][n][:][:])
+                            Faces[Init_shape[0]*n:Init_shape[0]*n+Init_shape[0],:]=Rec
+                            n+=1
+                            print(Faces)
+                    elif self.shape==3:
+                        Init = gridxy(ListeProjete[:][0][:][:],float(self.pathN))
+                        Init_shape=np.shape(Init)
+                        Faces=np.zeros((Init_shape[0]*ListeProjete_shape[0],12))
+                        while n <ListeProjete_shape[0]:
+                            Grid=gridxy(ListeProjete[:][n][:][:],float(self.pathN))
+                            Faces[Init_shape[0]*n:Init_shape[0]*n+Init_shape[0],:]=Grid
+                            n+=1
+                    elif self.shape==2:
+                        Init = ZigZag(ListeProjete[:][0][:][:],float(self.pathN))
+                        Init_shape=np.shape(Init)
+                        Faces=np.zeros((Init_shape[0]*ListeProjete_shape[0],12))
+                        while n <ListeProjete_shape[0]:
+                            ZZ=ZigZag(ListeProjete[:][n][:][:],float(self.pathN))
+                            Faces[Init_shape[0]*n:Init_shape[0]*n+Init_shape[0],:]=ZZ
+                            n+=1
+                    plot(Faces,my_mesh,-30,30,0,50)
+
     def View(self):
         if self.bouton_OK["fg"] == 'green':
             reader = tvtk.STLReader()

@@ -6,7 +6,7 @@ from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 import time
 
 from stl import mesh, Mesh
-import Locate_STL
+
 
 import numpy as np
 from Support_finder import support_45deg_rule
@@ -21,7 +21,7 @@ from Support_Shape import gridxy
 from Support_Shape import ZigZag
 from Support_Shape import plot
 from Support_Shape import plot_mesh
-from Hello import ShapeChoice
+from Locate_STL import ShapeChoice
 
 
 
@@ -31,9 +31,9 @@ print("by Thomas Heissel and Thomas Girerd       ")
 print("----------------------------------------\n")
 print("You need to choose the STL file you want to generate supports with.")
 
-
-
-my_mesh= mesh.Mesh.from_file(Locate_STL.STL1)
+from Locate_STL import FindSTL
+STL = FindSTL()
+my_mesh= mesh.Mesh.from_file(STL)
 normal=my_mesh.normals
 vertices= my_mesh.points
 support_angle=support_45deg_rule(normal,vertices,45)
