@@ -4,8 +4,10 @@ from mpl_toolkits import mplot3d
 from mpl_toolkits.mplot3d import Axes3D
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 import time
+
 from stl import mesh, Mesh
 import Locate_STL
+
 import numpy as np
 from Support_finder import support_45deg_rule
 from Support_finder import needed_support_Bridge_rule
