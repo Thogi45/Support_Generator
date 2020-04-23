@@ -31,8 +31,9 @@ print("by Thomas Heissel and Thomas Girerd       ")
 print("----------------------------------------\n")
 print("You need to choose the STL file you want to generate supports with.")
 
-import Locate_STL
-my_mesh= mesh.Mesh.from_file(Locate_STL.STL1)
+from Locate_STL import FindSTL
+STL = FindSTL()
+my_mesh= mesh.Mesh.from_file(STL)
 normal=my_mesh.normals
 vertices= my_mesh.points
 support_angle=support_45deg_rule(normal,vertices,45)
