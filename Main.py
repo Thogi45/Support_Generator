@@ -36,8 +36,8 @@ print("You need to choose the STL file you want to generate supports with.")
 my_mesh= mesh.Mesh.from_file(Locate_STL.STL1)
 normal=my_mesh.normals
 vertices= my_mesh.points
-support_angle=support_45deg_rule(normal,vertices)
-support_bridge=needed_support_Bridge_rule(normal,vertices)
+support_angle=support_45deg_rule(normal,vertices,45)
+support_bridge=needed_support_Bridge_rule(normal,vertices,5)
 i=0
 p=len(support_bridge)
 k=0

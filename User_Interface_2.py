@@ -10,11 +10,6 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from stl import mesh
 import numpy as np
 import Support_Generator
-import mayavi
-import vtk
-from tvtk.api import tvtk
-from mayavi import mlab
-
 
 
 class Interface(Frame):
