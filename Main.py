@@ -60,41 +60,29 @@ if len(ListeProjete)==0:
     print("you do not need any support")
 else:
     n=0
+    Faces=np.zeros((0,12))
     if ListeProjete_shape[2]==3:
-        Init = thetraedral_simple_support(ListeProjete[:][0][:][:])
-        Init_shape=np.shape(Init)
-        Faces=np.zeros((Init_shape[0]*ListeProjete_shape[0],12))
         while n <ListeProjete_shape[0]:
             The=thetraedral_simple_support(ListeProjete[:][n][:][:])
-            Faces[Init_shape[0]*n:Init_shape[0]*n+Init_shape[0],:]=The
+            Faces= np.append(Faces,The,axis=0)
             n+=1
         plot(Faces,my_mesh,-50,50,0,80)
     else:
         Choice=ShapeChoice()
         if Choice==1:
-            Init = Rectangular_simple_support(ListeProjete[:][0][:][:])
-            Init_shape=np.shape(Init)
-            Faces=np.zeros((Init_shape[0]*ListeProjete_shape[0],12))
             while n <ListeProjete_shape[0]:
                 Rec=Rectangular_simple_support(ListeProjete[:][n][:][:])
-                Faces[Init_shape[0]*n:Init_shape[0]*n+Init_shape[0],:]=Rec
+                Faces= np.append(Faces,Rec,axis=0)
                 n+=1
-                print(Faces)
         elif Choice==2:
-            Init = gridxy(ListeProjete[:][0][:][:],1)
-            Init_shape=np.shape(Init)
-            Faces=np.zeros((Init_shape[0]*ListeProjete_shape[0],12))
             while n <ListeProjete_shape[0]:
                 Grid=gridxy(ListeProjete[:][n][:][:],1)
-                Faces[Init_shape[0]*n:Init_shape[0]*n+Init_shape[0],:]=Grid
+                Faces= np.append(Faces,Grid,axis=0)
                 n+=1
         elif Choice==3:
-            Init = ZigZag(ListeProjete[:][0][:][:],1)
-            Init_shape=np.shape(Init)
-            Faces=np.zeros((Init_shape[0]*ListeProjete_shape[0],12))
             while n <ListeProjete_shape[0]:
                 ZZ=ZigZag(ListeProjete[:][n][:][:],1)
-                Faces[Init_shape[0]*n:Init_shape[0]*n+Init_shape[0],:]=ZZ
+                Faces= np.append(Faces,ZZ,axis=0)
                 n+=1
         plot(Faces,my_mesh,-30,30,0,50)
 
