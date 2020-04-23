@@ -200,40 +200,28 @@ class Interface(Frame):
                 print("you do not need any support")
             else:
                 n=0
+                Faces=np.zeros((0,12))
                 if ListeProjete_shape[2]==3:
-                    Init = thetraedral_simple_support(ListeProjete[:][0][:][:])
-                    Init_shape=np.shape(Init)
-                    Faces=np.zeros((Init_shape[0]*ListeProjete_shape[0],12))
                     while n <ListeProjete_shape[0]:
                         The=thetraedral_simple_support(ListeProjete[:][n][:][:])
-                        Faces[Init_shape[0]*n:Init_shape[0]*n+Init_shape[0],:]=The
+                        Faces= np.append(Faces,The,axis=0)
                         n+=1
                     plot(Faces,my_mesh,-50,50,0,80)
                 else:
                     if self.shape==1:
-                        Init = Rectangular_simple_support(ListeProjete[:][0][:][:])
-                        Init_shape=np.shape(Init)
-                        Faces=np.zeros((Init_shape[0]*ListeProjete_shape[0],12))
                         while n <ListeProjete_shape[0]:
                             Rec=Rectangular_simple_support(ListeProjete[:][n][:][:])
-                            Faces[Init_shape[0]*n:Init_shape[0]*n+Init_shape[0],:]=Rec
+                            Faces= np.append(Faces,Rec,axis=0)
                             n+=1
-                            print(Faces)
                     elif self.shape==3:
-                        Init = gridxy(ListeProjete[:][0][:][:],float(self.pathN))
-                        Init_shape=np.shape(Init)
-                        Faces=np.zeros((Init_shape[0]*ListeProjete_shape[0],12))
                         while n <ListeProjete_shape[0]:
                             Grid=gridxy(ListeProjete[:][n][:][:],float(self.pathN))
-                            Faces[Init_shape[0]*n:Init_shape[0]*n+Init_shape[0],:]=Grid
+                            Faces= np.append(Faces,Grid,axis=0)
                             n+=1
                     elif self.shape==2:
-                        Init = ZigZag(ListeProjete[:][0][:][:],float(self.pathN))
-                        Init_shape=np.shape(Init)
-                        Faces=np.zeros((Init_shape[0]*ListeProjete_shape[0],12))
                         while n <ListeProjete_shape[0]:
                             ZZ=ZigZag(ListeProjete[:][n][:][:],float(self.pathN))
-                            Faces[Init_shape[0]*n:Init_shape[0]*n+Init_shape[0],:]=ZZ
+                            Faces= np.append(Faces,ZZ,axis=0)
                             n+=1
                     plot(Faces,my_mesh,-30,30,0,50)
 

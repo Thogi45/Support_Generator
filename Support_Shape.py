@@ -290,7 +290,7 @@ def ZigZag(List,p):
 
 
 def plot(FacesMatrix,my_mesh,xy_limmin,xy_limmax,z_limmin,z_limmax):
-    FacesMatrix_shape=FacesMatrix.shape
+    FacesMatrix_shape=np.shape(FacesMatrix)
     figure2 = plt.figure()
     ax2 = figure2.add_subplot(111, projection='3d')
     verts=[[FacesMatrix[i,j*3:j*3+3] for j in range(4)] for i in range(FacesMatrix_shape[0])]
