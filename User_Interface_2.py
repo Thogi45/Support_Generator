@@ -7,6 +7,7 @@ from mpl_toolkits import mplot3d
 from mpl_toolkits.mplot3d import Axes3D
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from stl import mesh
 import numpy as np
 import Support_Generator
 import mayavi
@@ -160,14 +161,7 @@ class Interface(Frame):
             self.shape = self.var_choix.get()
     def View(self):
         if self.bouton_OK["fg"] == 'green':
-            reader = tvtk.STLReader()
-            reader.file_name = self.STL
-            reader.update()
-            surf = reader.output
-            mlab.pipeline.surface(surf)
-            mlab.show()
-            k=0
-            """""""""
+            my_mesh = mesh.Mesh.from_file(self.STL)
             figure2 = plt.figure()
             axes = mplot3d.Axes3D(figure2)
             axes.add_collection3d(mplot3d.art3d.Poly3DCollection(my_mesh.vectors))
@@ -180,7 +174,7 @@ class Interface(Frame):
             self.canvas4 = self.graph.get_tk_widget()
             self.canvas4.config(relief=GROOVE,borderwidth=5)
             self.canvas4.grid(column=8,row=1,rowspan=12,padx=10)
-            """""
+
         else:
             self.bouton_OK["fg"] = 'red'
 
