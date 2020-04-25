@@ -246,4 +246,4 @@ fenetre = Tk()
 fenetre.title('Support Generator')
 interface = Interface(fenetre)
 
-
+interface.mainloop()

@@ -251,12 +251,4 @@ fenetre.title('Support Generator')
 interface = Interface(fenetre)
 
 interface.mainloop()
-carot=interface.STL
-print(carot)
-carot = interface.angle
-print(carot)
-carot = interface.bridge
-print(carot)
-carot = interface.shape
-print(carot)
 
